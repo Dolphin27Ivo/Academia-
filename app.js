@@ -3,10 +3,39 @@ const SUPABASE_KEY = 'sb_publishable_c3OKLXg7KKfE8O2hW-cdQw_LYbncxsB';
 
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $=id=>document.getElementById(id);
-const KEY='academia_v1_data';
-let data=JSON.parse(localStorage.getItem(KEY)||'{"alunos":[],"pagamentos":[]}');
+let data = {
+  alunos: [],
+  pagamentos: []
+};
 const today=new Date();
-function save(){localStorage.setItem(KEY,JSON.stringify(data));}
+async function carregarDados(){
+  const { data: alunos, error: erroAlunos } = await db
+    .from('alunos')
+    .select('*')
+    .order('created_at', { ascending: true });
+
+  if (erroAlunos) {
+    console.error('Erro ao carregar alunos:', erroAlunos);
+    alert('Erro ao carregar os alunos do banco.');
+    return;
+  }
+
+  const { data: pagamentos, error: erroPagamentos } = await db
+    .from('pagamentos')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (erroPagamentos) {
+    console.error('Erro ao carregar pagamentos:', erroPagamentos);
+    alert('Erro ao carregar os pagamentos do banco.');
+    return;
+  }
+
+  data.alunos = alunos || [];
+  data.pagamentos = pagamentos || [];
+
+  renderAll();
+}
 function money(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
 function monthKey(d=new Date()){return d.toISOString().slice(0,7);}
 function formatDate(s){if(!s)return'';return new Date(s+'T12:00:00').toLocaleDateString('pt-BR');}
@@ -30,7 +59,55 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
 
 function renderAll(){renderDashboard();renderAlunos();renderPagamentos();populatePagAluno();}
 
-function renderDashboard(){
+function renderDashboard() {
+  const ativos = data.alunos.filter(a => a.ativo === true);
+
+  const mesAtual = new Date().toISOString().slice(0, 7);
+
+  const previsto = ativos.reduce(
+    (s, a) => s + Number(a.valor_mensal || 0),
+    0
+  );
+
+  const pagamentosMes = data.pagamentos.filter(p => {
+    if (!p.data_pagamento) return false;
+    return p.data_pagamento.slice(0, 7) === mesAtual;
+  });
+
+  const recebido = pagamentosMes.reduce(
+    (s, p) => s + Number(p.valor || 0),
+    0
+  );
+
+  const alunosPagaram = new Set(
+    pagamentosMes.map(p => p.aluno_id)
+  );
+
+  const atrasados = ativos.filter(a => {
+    if (alunosPagaram.has(a.id)) return false;
+
+    if (!a.data_inicio) return false;
+
+    return new Date().getDate() > 1;
+  }).length;
+
+  $('mAlunos').textContent = ativos.length;
+  $('mPrevisto').textContent = money(previsto);
+  $('mRecebido').textContent = money(recebido);
+  $('mAberto').textContent = money(Math.max(0, previsto - recebido));
+  $('mAtrasados').textContent = atrasados;
+  $('mAntecipados').textContent = 0;
+
+  $('resumo').textContent =
+    `Mês atual: ${new Date().toLocaleDateString('pt-BR', {
+      month: 'long',
+      year: 'numeric'
+    })}.`;
+
+  $('alertas').innerHTML = atrasados
+    ? `<div class="alert">⚠️ Existem ${atrasados} aluno(s) sem pagamento registrado neste mês.</div>`
+    : `<div class="alert">✅ Nenhum aluno sem pagamento registrado neste mês.</div>`;
+}
  const ativos=data.alunos.filter(a=>a.status!=='Inativo');
  const m=monthKey();
  const previsto=ativos.reduce((s,a)=>s+Number(a.mensalidade||0),0);
@@ -49,7 +126,39 @@ function renderDashboard(){
  $('alertas').innerHTML=atrasados?`<div class="alert">⚠️ Existem ${atrasados} aluno(s) com mensalidade aparentemente atrasada.</div>`:'<div class="alert">✅ Nenhum atraso aparente com base nos lançamentos.</div>';
 }
 
-function renderAlunos(filter=''){
+function renderAlunos(filter = '') {
+  const body = $('alunosBody');
+  body.innerHTML = '';
+
+  data.alunos
+    .filter(a =>
+      (a.nome + ' ' + (a.telefone || ''))
+        .toLowerCase()
+        .includes(filter.toLowerCase())
+    )
+    .forEach(a => {
+      const tr = document.createElement('tr');
+
+      tr.innerHTML = `
+        <td>${esc(a.nome)}</td>
+        <td>${esc(a.telefone || '')}</td>
+        <td>${money(a.valor_mensal)}</td>
+        <td>${a.plano || '-'}</td>
+        <td>
+          <span class="badge ${a.ativo ? 'ok' : 'warn'}">
+            ${a.ativo ? 'Ativo' : 'Inativo'}
+          </span>
+        </td>
+        <td>
+          <button onclick="toggleAluno('${a.id}')">
+            ${a.ativo ? 'Inativar' : 'Ativar'}
+          </button>
+        </td>
+      `;
+
+      body.appendChild(tr);
+    });
+}
  const body=$('alunosBody'); body.innerHTML='';
  data.alunos.filter(a=>(a.nome+' '+(a.telefone||'')).toLowerCase().includes(filter.toLowerCase())).forEach(a=>{
   const tr=document.createElement('tr');
@@ -58,14 +167,64 @@ function renderAlunos(filter=''){
  });
 }
 $('buscaAluno').oninput=e=>renderAlunos(e.target.value);
-function toggleAluno(id){let a=aluno(id);a.status=a.status==='Ativo'?'Inativo':'Ativo';save();renderAll();}
+async function toggleAluno(id) {
+  const alunoAtual = data.alunos.find(a => a.id === id);
+
+  if (!alunoAtual) return;
+
+  const novoStatus = !alunoAtual.ativo;
+
+  const { data: alunoAtualizado, error } = await db
+    .from('alunos')
+    .update({ ativo: novoStatus })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Erro ao atualizar aluno:', error);
+    alert('Erro ao atualizar aluno: ' + error.message);
+    return;
+  }
+
+  const indice = data.alunos.findIndex(a => a.id === id);
+  data.alunos[indice] = alunoAtualizado;
+
+  renderAll();
+}
 
 $('novoAlunoBtn').onclick=()=>{$('modal').classList.remove('hidden');$('nome').focus()};
 $('closeModal').onclick=()=>{$('modal').classList.add('hidden')};
-$('alunoForm').onsubmit=e=>{
- e.preventDefault();
- data.alunos.push({id:crypto.randomUUID(),nome:$('nome').value.trim(),telefone:$('telefone').value.trim(),mensalidade:Number($('mensalidade').value),vencimento:Number($('vencimento').value),status:'Ativo'});
- save();e.target.reset();$('modal').classList.add('hidden');renderAll();
+$('alunoForm').onsubmit = async e => {
+  e.preventDefault();
+
+  const aluno = {
+    nome: $('nome').value.trim(),
+    telefone: $('telefone').value.trim(),
+    valor_mensal: Number($('mensalidade').value),
+    ativo: true
+  };
+
+  const { data: novoAluno, error } = await db
+    .from('alunos')
+    .insert(aluno)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Erro ao cadastrar aluno:', error);
+    alert('Erro ao cadastrar aluno: ' + error.message);
+    return;
+  }
+
+  data.alunos.push(novoAluno);
+
+  e.target.reset();
+  $('modal').classList.add('hidden');
+
+  renderAll();
+
+  alert('Aluno cadastrado com sucesso!');
 };
 
 function populatePagAluno(){
@@ -74,11 +233,47 @@ function populatePagAluno(){
 }
 $('pagAluno').onchange=()=>{let a=aluno($('pagAluno').value);if(a)$('pagValor').value=a.mensalidade};
 
-$('pagForm').onsubmit=e=>{
- e.preventDefault();
- const id=$('pagAluno').value;if(!id)return;
- data.pagamentos.unshift({id:crypto.randomUUID(),alunoId:id,mes:$('pagMes').value,valor:Number($('pagValor').value),data:$('pagData').value,forma:$('pagForma').value,antecipado:$('pagAnt').value,obs:$('pagObs').value,registradoEm:new Date().toISOString()});
- save();e.target.reset();$('pagData').value=new Date().toISOString().slice(0,10);renderAll();alert('Pagamento registrado com sucesso.');
+$('pagForm').onsubmit = async e => {
+  e.preventDefault();
+
+  const alunoId = $('pagAluno').value;
+
+  if (!alunoId) {
+    alert('Selecione um aluno.');
+    return;
+  }
+
+  const pagamento = {
+    aluno_id: alunoId,
+    valor: Number($('pagValor').value),
+    data_pagamento: $('pagData').value,
+    data_vencimento: $('pagMes').value + '-01',
+    forma_pagamento: $('pagForma').value,
+    observacao: $('pagObs').value.trim()
+  };
+
+  const { data: novoPagamento, error } = await db
+    .from('pagamentos')
+    .insert(pagamento)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Erro ao registrar pagamento:', error);
+    alert('Erro ao registrar pagamento: ' + error.message);
+    return;
+  }
+
+  data.pagamentos.unshift(novoPagamento);
+
+  e.target.reset();
+
+  $('pagMes').value = new Date().toISOString().slice(0, 7);
+  $('pagData').value = new Date().toISOString().slice(0, 10);
+
+  renderAll();
+
+  alert('Pagamento registrado com sucesso!');
 };
 $('pagMes').value=monthKey();$('pagData').value=new Date().toISOString().slice(0,10);
 
@@ -94,3 +289,4 @@ function renderPagamentos(){
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 
 // Demo data buttonless seed: start empty to let the owner enter real data.
+carregarDados();
