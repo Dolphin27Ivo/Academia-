@@ -1,3 +1,7 @@
+const SUPABASE_URL = 'https://shmkczisodmowazppteb.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_c3OKLXg7KKfE8O2hW-cdQw_LYbncxsB';
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const KEY='academia_v1_data';
 let data=JSON.parse(localStorage.getItem(KEY)||'{"alunos":[],"pagamentos":[]}');
