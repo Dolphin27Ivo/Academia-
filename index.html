@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academia — Controle</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="login" class="login-wrap">
+    <div class="login-card">
+      <div class="logo">🏋️</div>
+      <h1>Controle da Academia</h1>
+      <p>Primeira versão — painel administrativo</p>
+      <input id="loginUser" placeholder="Usuário" autocomplete="username">
+      <input id="loginPass" type="password" placeholder="Senha" autocomplete="current-password">
+      <button id="loginBtn">Entrar</button>
+      <small>Demo inicial: admin / 1234</small>
+    </div>
+  </div>
+
+  <div id="app" class="hidden">
+    <header class="topbar">
+      <div>
+        <h1>🏋️ Academia</h1>
+        <span id="today"></span>
+      </div>
+      <button id="logoutBtn" class="secondary">Sair</button>
+    </header>
+
+    <main class="container">
+      <nav class="tabs">
+        <button class="tab active" data-tab="dashboard">Dashboard</button>
+        <button class="tab" data-tab="alunos">Alunos</button>
+        <button class="tab" data-tab="pagamentos">Pagamentos</button>
+      </nav>
+
+      <section id="dashboard" class="panel active">
+        <div class="grid metrics">
+          <div class="card"><span>Alunos ativos</span><strong id="mAlunos">0</strong></div>
+          <div class="card"><span>Previsto no mês</span><strong id="mPrevisto">R$ 0,00</strong></div>
+          <div class="card"><span>Recebido</span><strong id="mRecebido">R$ 0,00</strong></div>
+          <div class="card"><span>Em aberto</span><strong id="mAberto">R$ 0,00</strong></div>
+          <div class="card"><span>Atrasados</span><strong id="mAtrasados">0</strong></div>
+          <div class="card"><span>Antecipados</span><strong id="mAntecipados">0</strong></div>
+        </div>
+        <div class="card">
+          <h2>Resumo do mês</h2>
+          <p id="resumo"></p>
+          <div id="alertas"></div>
+        </div>
+      </section>
+
+      <section id="alunos" class="panel">
+        <div class="section-head">
+          <h2>Alunos</h2>
+          <button id="novoAlunoBtn">+ Novo aluno</button>
+        </div>
+        <input id="buscaAluno" class="search" placeholder="Pesquisar aluno...">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Aluno</th><th>Telefone</th><th>Mensalidade</th><th>Vencimento</th><th>Status</th><th>Ação</th></tr></thead>
+            <tbody id="alunosBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="pagamentos" class="panel">
+        <div class="section-head">
+          <h2>Registrar pagamento</h2>
+        </div>
+        <form id="pagForm" class="form-grid">
+          <label>Aluno<select id="pagAluno" required></select></label>
+          <label>Referente a<input id="pagMes" type="month" required></label>
+          <label>Valor<input id="pagValor" type="number" step="0.01" required></label>
+          <label>Data<input id="pagData" type="date" required></label>
+          <label>Forma<select id="pagForma"><option>Pix</option><option>Dinheiro</option><option>Cartão</option><option>Transferência</option></select></label>
+          <label>Antecipado?<select id="pagAnt"><option>Não</option><option>Sim</option></select></label>
+          <label class="full">Observação<input id="pagObs"></label>
+          <button class="full" type="submit">Registrar pagamento</button>
+        </form>
+        <div class="card">
+          <h2>Últimos pagamentos</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Data</th><th>Aluno</th><th>Referência</th><th>Valor</th><th>Forma</th><th>Registrado em</th></tr></thead>
+              <tbody id="pagBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-card">
+      <button id="closeModal" class="close">×</button>
+      <h2>Novo aluno</h2>
+      <form id="alunoForm">
+        <input id="nome" placeholder="Nome completo" required>
+        <input id="telefone" placeholder="Telefone">
+        <input id="mensalidade" type="number" step="0.01" placeholder="Mensalidade" required>
+        <input id="vencimento" type="number" min="1" max="31" placeholder="Dia do vencimento" required>
+        <button type="submit">Salvar aluno</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
