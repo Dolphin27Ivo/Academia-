@@ -191,8 +191,16 @@ $('alunoForm').onsubmit = async e => {
   .insert([aluno]);
 
 if (error) {
-  console.error('Erro ao cadastrar aluno:', error);
-  alert('Erro ao cadastrar aluno: ' + error.message);
+  console.error('ERRO COMPLETO:', error);
+
+  alert(
+    'ERRO NO SUPABASE\n\n' +
+    'Mensagem: ' + (error.message || '') + '\n\n' +
+    'Código: ' + (error.code || '') + '\n\n' +
+    'Detalhes: ' + (error.details || '') + '\n\n' +
+    'Hint: ' + (error.hint || '')
+  );
+
   return;
 }
 
