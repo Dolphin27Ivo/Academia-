@@ -186,11 +186,23 @@ $('alunoForm').onsubmit = async e => {
 
   console.log('Dados enviados:', aluno);
 
-  const { data: novoAluno, error } = await db
-    .from('alunos')
-    .insert([aluno])
-    .select()
-    .single();
+ const { error } = await db
+  .from('alunos')
+  .insert([aluno]);
+
+if (error) {
+  console.error('Erro ao cadastrar aluno:', error);
+  alert('Erro ao cadastrar aluno: ' + error.message);
+  return;
+}
+
+e.target.reset();
+$('modal').classList.add('hidden');
+
+await carregarDados();
+
+alert('Aluno cadastrado com sucesso!');
+return;
 
   if (error) {
     console.error('Erro ao cadastrar aluno:', error);
