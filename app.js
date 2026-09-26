@@ -172,11 +172,36 @@ $('alunoForm').onsubmit = async e => {
 $('alunoForm').onsubmit = async e => {
   e.preventDefault();
 
-const aluno = {
-  nome: $('nome').value.trim(),
-  telefone: $('telefone').value.trim(),
-  valor_mensal: Number($('mensalidade').value),
-  ativo: true
+  const aluno = {
+    nome: $('nome').value.trim(),
+    telefone: $('telefone').value.trim(),
+    valor_mensal: Number($('mensalidade').value),
+    ativo: true
+  };
+
+  console.log('Dados enviados:', aluno);
+
+  const { data: novoAluno, error } = await db
+    .from('alunos')
+    .insert([aluno])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Erro ao cadastrar aluno:', error);
+    alert('Erro ao cadastrar aluno: ' + error.message);
+    return;
+  }
+
+  data.alunos.push(novoAluno);
+
+  e.target.reset();
+
+  $('modal').classList.add('hidden');
+
+  renderAll();
+
+  alert('Aluno cadastrado com sucesso!');
 };
 
   console.log('Dados enviados:', aluno);
