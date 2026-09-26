@@ -172,17 +172,12 @@ $('alunoForm').onsubmit = async e => {
 $('alunoForm').onsubmit = async e => {
   e.preventDefault();
 
-  const aluno = {
-    nome: $('nome').value.trim(),
-    cpf: $('cpf').value.trim() || null,
-    telefone: $('telefone').value.trim() || null,
-    data_nascimento: $('dataNascimento').value || null,
-    data_inicio: $('dataInicio').value || null,
-    plano: $('plano').value.trim() || null,
-    valor_mensal: Number($('mensalidade').value) || 0,
-    vencimento: Number($('vencimento').value) || null,
-    ativo: true
-  };
+const aluno = {
+  nome: $('nome').value.trim(),
+  telefone: $('telefone').value.trim(),
+  valor_mensal: Number($('mensalidade').value),
+  ativo: true
+};
 
   console.log('Dados enviados:', aluno);
 
