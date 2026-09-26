@@ -180,6 +180,7 @@ $('alunoForm').onsubmit = async e => {
   };
 
   console.log('Dados enviados:', aluno);
+  alert('App.js atualizado está sendo executado');
 
   const { data: novoAluno, error } = await db
     .from('alunos')
