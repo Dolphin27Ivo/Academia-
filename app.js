@@ -169,12 +169,43 @@ $('closeModal').onclick=()=>{$('modal').classList.add('hidden')};
 $('alunoForm').onsubmit = async e => {
   e.preventDefault();
 
+$('alunoForm').onsubmit = async e => {
+  e.preventDefault();
+
   const aluno = {
     nome: $('nome').value.trim(),
+    cpf: $('cpf').value.trim(),
     telefone: $('telefone').value.trim(),
+    data_nascimento: $('dataNascimento').value || null,
+    data_inicio: $('dataInicio').value || null,
+    plano: $('plano').value.trim(),
     valor_mensal: Number($('mensalidade').value),
+    vencimento: Number($('vencimento').value),
     ativo: true
   };
+
+  const { data: novoAluno, error } = await db
+    .from('alunos')
+    .insert(aluno)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Erro ao cadastrar aluno:', error);
+    alert('Erro ao cadastrar aluno: ' + error.message);
+    return;
+  }
+
+  data.alunos.push(novoAluno);
+
+  e.target.reset();
+
+  $('modal').classList.add('hidden');
+
+  renderAll();
+
+  alert('Aluno cadastrado com sucesso!');
+};
 
   const { data: novoAluno, error } = await db
     .from('alunos')
