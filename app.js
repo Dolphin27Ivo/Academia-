@@ -58,24 +58,23 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
 });
 
 function renderAll(){renderDashboard();renderAlunos();renderPagamentos();populatePagAluno();}
-
 function renderDashboard() {
   const ativos = data.alunos.filter(a => a.ativo === true);
 
   const mesAtual = new Date().toISOString().slice(0, 7);
 
   const previsto = ativos.reduce(
-    (s, a) => s + Number(a.valor_mensal || 0),
+    (total, aluno) => total + Number(aluno.valor_mensal || 0),
     0
   );
 
   const pagamentosMes = data.pagamentos.filter(p => {
-    if (!p.data_pagamento) return false;
-    return p.data_pagamento.slice(0, 7) === mesAtual;
+    return p.data_pagamento &&
+           p.data_pagamento.slice(0, 7) === mesAtual;
   });
 
   const recebido = pagamentosMes.reduce(
-    (s, p) => s + Number(p.valor || 0),
+    (total, pagamento) => total + Number(pagamento.valor || 0),
     0
   );
 
@@ -83,18 +82,15 @@ function renderDashboard() {
     pagamentosMes.map(p => p.aluno_id)
   );
 
-  const atrasados = ativos.filter(a => {
-    if (alunosPagaram.has(a.id)) return false;
-
-    if (!a.data_inicio) return false;
-
-    return new Date().getDate() > 1;
-  }).length;
+  const atrasados = ativos.filter(
+    aluno => !alunosPagaram.has(aluno.id)
+  ).length;
 
   $('mAlunos').textContent = ativos.length;
   $('mPrevisto').textContent = money(previsto);
   $('mRecebido').textContent = money(recebido);
-  $('mAberto').textContent = money(Math.max(0, previsto - recebido));
+  $('mAberto').textContent =
+    money(Math.max(0, previsto - recebido));
   $('mAtrasados').textContent = atrasados;
   $('mAntecipados').textContent = 0;
 
@@ -108,24 +104,6 @@ function renderDashboard() {
     ? `<div class="alert">⚠️ Existem ${atrasados} aluno(s) sem pagamento registrado neste mês.</div>`
     : `<div class="alert">✅ Nenhum aluno sem pagamento registrado neste mês.</div>`;
 }
- const ativos=data.alunos.filter(a=>a.status!=='Inativo');
- const m=monthKey();
- const previsto=ativos.reduce((s,a)=>s+Number(a.mensalidade||0),0);
- const pays=data.pagamentos.filter(p=>p.mes===m);
- const recebido=pays.reduce((s,p)=>s+Number(p.valor||0),0);
- const pagoIds=new Set(pays.map(p=>p.alunoId));
- const atrasados=ativos.filter(a=>!pagoIds.has(a.id) && new Date().getDate()>Number(a.vencimento||31)).length;
- const antecipados=pays.filter(p=>p.antecipado==='Sim').length;
- $('mAlunos').textContent=ativos.length;
- $('mPrevisto').textContent=money(previsto);
- $('mRecebido').textContent=money(recebido);
- $('mAberto').textContent=money(Math.max(0,previsto-recebido));
- $('mAtrasados').textContent=atrasados;
- $('mAntecipados').textContent=antecipados;
- $('resumo').textContent=`Mês atual: ${new Date().toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}.`;
- $('alertas').innerHTML=atrasados?`<div class="alert">⚠️ Existem ${atrasados} aluno(s) com mensalidade aparentemente atrasada.</div>`:'<div class="alert">✅ Nenhum atraso aparente com base nos lançamentos.</div>';
-}
-
 function renderAlunos(filter = '') {
   const body = $('alunosBody');
   body.innerHTML = '';
