@@ -137,13 +137,6 @@ function renderAlunos(filter = '') {
       body.appendChild(tr);
     });
 }
- const body=$('alunosBody'); body.innerHTML='';
- data.alunos.filter(a=>(a.nome+' '+(a.telefone||'')).toLowerCase().includes(filter.toLowerCase())).forEach(a=>{
-  const tr=document.createElement('tr');
-  tr.innerHTML=`<td>${esc(a.nome)}</td><td>${esc(a.telefone||'')}</td><td>${money(a.mensalidade)}</td><td>Dia ${a.vencimento}</td><td><span class="badge ${a.status==='Ativo'?'ok':'warn'}">${a.status}</span></td><td><button onclick="toggleAluno('${a.id}')">${a.status==='Ativo'?'Inativar':'Ativar'}</button></td>`;
-  body.appendChild(tr);
- });
-}
 $('buscaAluno').oninput=e=>renderAlunos(e.target.value);
 async function toggleAluno(id) {
   const alunoAtual = data.alunos.find(a => a.id === id);
