@@ -164,18 +164,27 @@ async function toggleAluno(id) {
   renderAll();
 }
 
-$('novoAlunoBtn').onclick=()=>{$('modal').classList.remove('hidden');$('nome').focus()};
-$('closeModal').onclick=()=>{$('modal').classList.add('hidden')};
-$('alunoForm').onsubmit = async e => {
-  e.preventDefault();
+$('novoAlunoBtn').onclick = () => {
+  $('modal').classList.remove('hidden');
+  $('nome').focus();
+};
+
+$('closeModal').onclick = () => {
+  $('modal').classList.add('hidden');
+};
 
 $('alunoForm').onsubmit = async e => {
   e.preventDefault();
 
   const aluno = {
     nome: $('nome').value.trim(),
+    cpf: $('cpf').value.trim(),
     telefone: $('telefone').value.trim(),
+    data_nascimento: $('dataNascimento').value || null,
+    data_inicio: $('dataInicio').value || null,
+    plano: $('plano').value.trim(),
     valor_mensal: Number($('mensalidade').value),
+    vencimento: Number($('vencimento').value),
     ativo: true
   };
 
@@ -190,7 +199,15 @@ $('alunoForm').onsubmit = async e => {
 
   if (error) {
     console.error('Erro ao cadastrar aluno:', error);
-    alert('Erro ao cadastrar aluno: ' + error.message);
+
+    alert(
+      'ERRO NO SUPABASE\n\n' +
+      'Mensagem: ' + (error.message || '') + '\n\n' +
+      'Código: ' + (error.code || '') + '\n\n' +
+      'Detalhes: ' + (error.details || '') + '\n\n' +
+      'Hint: ' + (error.hint || '')
+    );
+
     return;
   }
 
@@ -198,72 +215,6 @@ $('alunoForm').onsubmit = async e => {
 
   e.target.reset();
 
-  $('modal').classList.add('hidden');
-
-  renderAll();
-
-  alert('Aluno cadastrado com sucesso!');
-};
-
-  console.log('Dados enviados:', aluno);
-
- const { error } = await db
-  .from('alunos')
-  .insert([aluno]);
-
-if (error) {
-  console.error('ERRO COMPLETO:', error);
-
-  alert(
-    'ERRO NO SUPABASE\n\n' +
-    'Mensagem: ' + (error.message || '') + '\n\n' +
-    'Código: ' + (error.code || '') + '\n\n' +
-    'Detalhes: ' + (error.details || '') + '\n\n' +
-    'Hint: ' + (error.hint || '')
-  );
-
-  return;
-}
-
-e.target.reset();
-$('modal').classList.add('hidden');
-
-await carregarDados();
-
-alert('Aluno cadastrado com sucesso!');
-return;
-
-  if (error) {
-    console.error('Erro ao cadastrar aluno:', error);
-    alert('Erro ao cadastrar aluno: ' + error.message);
-    return;
-  }
-
-  data.alunos.push(novoAluno);
-
-  e.target.reset();
-  $('modal').classList.add('hidden');
-
-  renderAll();
-
-  alert('Aluno cadastrado com sucesso!');
-};
-
-  const { data: novoAluno, error } = await db
-    .from('alunos')
-    .insert(aluno)
-    .select()
-    .single();
-
-  if (error) {
-    console.error('Erro ao cadastrar aluno:', error);
-    alert('Erro ao cadastrar aluno: ' + error.message);
-    return;
-  }
-
-  data.alunos.push(novoAluno);
-
-  e.target.reset();
   $('modal').classList.add('hidden');
 
   renderAll();
