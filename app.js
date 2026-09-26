@@ -174,19 +174,21 @@ $('alunoForm').onsubmit = async e => {
 
   const aluno = {
     nome: $('nome').value.trim(),
-    cpf: $('cpf').value.trim(),
-    telefone: $('telefone').value.trim(),
+    cpf: $('cpf').value.trim() || null,
+    telefone: $('telefone').value.trim() || null,
     data_nascimento: $('dataNascimento').value || null,
     data_inicio: $('dataInicio').value || null,
-    plano: $('plano').value.trim(),
-    valor_mensal: Number($('mensalidade').value),
-    vencimento: Number($('vencimento').value),
+    plano: $('plano').value.trim() || null,
+    valor_mensal: Number($('mensalidade').value) || 0,
+    vencimento: Number($('vencimento').value) || null,
     ativo: true
   };
 
+  console.log('Dados enviados:', aluno);
+
   const { data: novoAluno, error } = await db
     .from('alunos')
-    .insert(aluno)
+    .insert([aluno])
     .select()
     .single();
 
@@ -199,7 +201,6 @@ $('alunoForm').onsubmit = async e => {
   data.alunos.push(novoAluno);
 
   e.target.reset();
-
   $('modal').classList.add('hidden');
 
   renderAll();
