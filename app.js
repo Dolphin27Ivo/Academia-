@@ -198,11 +198,28 @@ $('alunoForm').onsubmit = async e => {
   alert('Aluno cadastrado com sucesso!');
 };
 
-function populatePagAluno(){
- $('pagAluno').innerHTML='<option value="">Selecione...</option>';
- data.alunos.filter(a=>a.status==='Ativo').forEach(a=>{let o=document.createElement('option');o.value=a.id;o.textContent=a.nome;$('pagAluno').appendChild(o)});
+function populatePagAluno() {
+  $('pagAluno').innerHTML = '<option value="">Selecione...</option>';
+
+  data.alunos
+    .filter(a => a.ativo === true)
+    .forEach(a => {
+      const option = document.createElement('option');
+
+      option.value = a.id;
+      option.textContent = a.nome;
+
+      $('pagAluno').appendChild(option);
+    });
 }
-$('pagAluno').onchange=()=>{let a=aluno($('pagAluno').value);if(a)$('pagValor').value=a.mensalidade};
+
+$('pagAluno').onchange = () => {
+  const a = aluno($('pagAluno').value);
+
+  if (a) {
+    $('pagValor').value = a.valor_mensal || '';
+  }
+};
 
 $('pagForm').onsubmit = async e => {
   e.preventDefault();
