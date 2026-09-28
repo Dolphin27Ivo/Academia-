@@ -74,6 +74,12 @@
         data-admin-only>
         Relatórios
       </button>
+        <button
+  class="tab"
+  data-tab="fluxoCaixa"
+  data-admin-only>
+  Fluxo de Caixa
+</button>
 
       </nav>
 
@@ -497,6 +503,106 @@
         </div>
 
       </section>
+      <!-- =========================
+     FLUXO DE CAIXA – ADMIN
+========================= -->
+
+<section
+  id="fluxoCaixa"
+  class="panel"
+  data-admin-only>
+
+  <div class="section-head">
+    <h2>Fluxo de Caixa</h2>
+  </div>
+
+  <div class="card">
+
+    <h2>Período do fluxo de caixa</h2>
+
+    <div class="form-grid">
+
+      <label>
+        Data inicial
+        <input
+          type="date"
+          id="fluxoDataInicial">
+      </label>
+
+      <label>
+        Data final
+        <input
+          type="date"
+          id="fluxoDataFinal">
+      </label>
+
+      <button
+        type="button"
+        class="full"
+        id="gerarFluxoBtn">
+        Gerar fluxo de caixa
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="grid metrics">
+
+    <div class="card">
+      <span>Total de entradas</span>
+      <strong id="fluxoEntradas">R$ 0,00</strong>
+    </div>
+
+    <div class="card">
+      <span>Total de saídas</span>
+      <strong id="fluxoSaidas">R$ 0,00</strong>
+    </div>
+
+    <div class="card">
+      <span>Saldo do período</span>
+      <strong id="fluxoSaldo">R$ 0,00</strong>
+    </div>
+
+    <div class="card">
+      <span>Entradas registradas</span>
+      <strong id="fluxoQtdEntradas">0</strong>
+    </div>
+
+    <div class="card">
+      <span>Saídas registradas</span>
+      <strong id="fluxoQtdSaidas">0</strong>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Movimentações do período</h2>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Tipo</th>
+            <th>Descrição</th>
+            <th>Categoria</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+
+        <tbody id="fluxoBody"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
       <!-- =========================
      RELATÓRIOS — ADMIN
 ========================= -->
