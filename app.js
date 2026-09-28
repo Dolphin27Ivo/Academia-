@@ -102,20 +102,61 @@ async function carregarDados() {
    LOGIN
 ========================= */
 
+let usuarioLogado = null;
+let perfilUsuario = null;
+
 async function login() {
-  const usuario = $('loginUser').value.trim();
+  const email = $('loginUser').value.trim();
   const senha = $('loginPass').value;
 
-  if (usuario !== 'admin' || senha !== '1234') {
-    alert('Usuário ou senha incorretos.');
+  if (!email || !senha) {
+    alert('Informe o e-mail e a senha.');
     return;
   }
 
-  $('login').classList.add('hidden');
-  $('app').classList.remove('hidden');
+  const botao = $('loginBtn');
+  botao.disabled = true;
 
-  await carregarDados();
+  try {
+    const { data: authData, error: authError } =
+      await db.auth.signInWithPassword({
+        email,
+        password: senha
+      });
+
+    if (authError) throw authError;
+
+    usuarioLogado = authData.user;
+
+    const { data: perfil, error: perfilError } = await db
+      .from('usuarios')
+      .select('*')
+      .eq('id', usuarioLogado.id)
+      .eq('ativo', true)
+      .single();
+
+    if (perfilError || !perfil) {
+      await db.auth.signOut();
+      usuarioLogado = null;
+      perfilUsuario = null;
+      throw new Error('Usuário sem permissão de acesso ao sistema.');
+    }
+
+    perfilUsuario = perfil;
+
+    $('login').classList.add('hidden');
+    $('app').classList.remove('hidden');
+
+    await carregarDados();
+
+  } catch (erro) {
+    console.error(erro);
+    alert('Não foi possível entrar: ' + erro.message);
+  } finally {
+    botao.disabled = false;
+  }
 }
+
 
 $('loginBtn').onclick = login;
 
@@ -123,7 +164,10 @@ $('loginPass').addEventListener('keydown', e => {
   if (e.key === 'Enter') login();
 });
 
-$('logoutBtn').onclick = () => location.reload();
+$('logoutBtn').onclick = async () => {
+  await db.auth.signOut();
+  location.reload();
+}
 
 $('today').textContent = new Date().toLocaleDateString(
   'pt-BR',
