@@ -158,46 +158,43 @@ async function login() {
 }
 
 
-async function verificarRecuperacaoSenha() {
-  const { data } = await db.auth.getSession();
+let modoRecuperacao = false;
 
-  if (!data.session) return;
+db.auth.onAuthStateChange(async (event, session) => {
+  if (event !== 'PASSWORD_RECOVERY') return;
 
-  const hash = window.location.hash || '';
+  modoRecuperacao = true;
 
-  if (hash.includes('type=recovery')) {
-    const novaSenha = prompt('Digite sua nova senha:');
+  const novaSenha = prompt('Digite sua nova senha:');
 
-    if (!novaSenha) {
-      await db.auth.signOut();
-      return;
-    }
-
-    if (novaSenha.length < 6) {
-      alert('A senha deve ter pelo menos 6 caracteres.');
-      await db.auth.signOut();
-      return;
-    }
-
-    const { error } = await db.auth.updateUser({
-      password: novaSenha
-    });
-
-    if (error) {
-      alert('Não foi possível alterar a senha: ' + error.message);
-      return;
-    }
-
-    alert('Senha alterada com sucesso! Agora você pode entrar no sistema.');
+  if (!novaSenha) {
     await db.auth.signOut();
-
-    window.location.hash = '';
-    location.reload();
+    return;
   }
-}
 
-verificarRecuperacaoSenha();
+  if (novaSenha.length < 6) {
+    alert('A senha deve ter pelo menos 6 caracteres.');
+    await db.auth.signOut();
+    return;
+  }
 
+  const { error } = await db.auth.updateUser({
+    password: novaSenha
+  });
+
+  if (error) {
+    console.error(error);
+    alert('Não foi possível alterar a senha: ' + error.message);
+    return;
+  }
+
+  alert('Senha alterada com sucesso!');
+
+  await db.auth.signOut();
+
+  window.location.hash = '';
+  location.reload();
+});
 $('logoutBtn').onclick = async () => {
   await db.auth.signOut();
   location.reload();
