@@ -1765,6 +1765,129 @@ if (gerarRelatorioBtn) {
 }
 
 prepararRelatorio();
+/* =========================
+   FLUXO DE CAIXA — ADMIN
+========================= */
+
+function prepararFluxoCaixa() {
+  const inicial = $('fluxoDataInicial');
+  const final = $('fluxoDataFinal');
+
+  if (!inicial || !final) return;
+
+  const hojeData = new Date();
+
+  const primeiroDia = new Date(
+    hojeData.getFullYear(),
+    hojeData.getMonth(),
+    1
+  );
+
+  const ultimoDia = new Date(
+    hojeData.getFullYear(),
+    hojeData.getMonth() + 1,
+    0
+  );
+
+  const formatar = d =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  if (!inicial.value) {
+    inicial.value = formatar(primeiroDia);
+  }
+
+  if (!final.value) {
+    final.value = formatar(ultimoDia);
+  }
+}
+
+
+function gerarFluxoCaixa() {
+  if (!exigirAdmin()) return;
+
+  const dataInicial = $('fluxoDataInicial')?.value;
+  const dataFinal = $('fluxoDataFinal')?.value;
+
+  if (!dataInicial || !dataFinal) {
+    alert('Informe a data inicial e a data final.');
+    return;
+  }
+
+  if (dataInicial > dataFinal) {
+    alert('A data inicial não pode ser maior que a data final.');
+    return;
+  }
+
+  const pagamentosPeriodo = data.pagamentos.filter(p =>
+    p.data_pagamento &&
+    p.data_pagamento >= dataInicial &&
+    p.data_pagamento <= dataFinal
+  );
+
+  const despesasPeriodo = data.despesas.filter(d =>
+    d.data_despesa &&
+    d.data_despesa >= dataInicial &&
+    d.data_despesa <= dataFinal
+  );
+
+  const receitas = pagamentosPeriodo.reduce(
+    (total, p) => total + Number(p.valor || 0),
+    0
+  );
+
+  const despesas = despesasPeriodo.reduce(
+    (total, d) => total + Number(d.valor || 0),
+    0
+  );
+
+  const saldo = receitas - despesas;
+
+  if ($('fluxoReceitas')) {
+    $('fluxoReceitas').textContent = money(receitas);
+  }
+
+  if ($('fluxoDespesas')) {
+    $('fluxoDespesas').textContent = money(despesas);
+  }
+
+  if ($('fluxoSaldo')) {
+    $('fluxoSaldo').textContent = money(saldo);
+  }
+
+  if ($('fluxoResumo')) {
+    $('fluxoResumo').innerHTML = `
+      <strong>Período:</strong>
+      ${formatDate(dataInicial)} até ${formatDate(dataFinal)}
+
+      <br><br>
+
+      <strong>Entradas:</strong>
+      ${money(receitas)}
+
+      <br>
+
+      <strong>Saídas:</strong>
+      ${money(despesas)}
+
+      <br><br>
+
+      <strong>Saldo do período:
+      ${money(saldo)}</strong>
+    `;
+  }
+}
+
+
+const gerarFluxoBtn = $('gerarFluxoBtn');
+
+if (gerarFluxoBtn) {
+  gerarFluxoBtn.addEventListener(
+    'click',
+    gerarFluxoCaixa
+  );
+}
+
+prepararFluxoCaixa();
 
 /* =========================
    INICIALIZAÇÃO
