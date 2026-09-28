@@ -143,6 +143,7 @@ async function login() {
     }
 
     perfilUsuario = perfil;
+    aplicarPermissoes();
 
     $('login').classList.add('hidden');
     $('app').classList.remove('hidden');
@@ -205,6 +206,46 @@ $('today').textContent = new Date().toLocaleDateString(
   'pt-BR',
   { dateStyle: 'full' }
 );
+/* =========================
+   PERMISSÕES
+========================= */
+
+function ehAdmin() {
+  return perfilUsuario?.tipo === 'admin';
+}
+
+function ehRecepcao() {
+  return perfilUsuario?.tipo === 'recepcao';
+}
+
+function exigirAdmin() {
+  if (!ehAdmin()) {
+    alert('Acesso restrito ao administrador.');
+    return false;
+  }
+
+  return true;
+}
+
+function aplicarPermissoes() {
+  if (!perfilUsuario) return;
+
+  const tipo = perfilUsuario.tipo;
+
+  console.log('Usuário logado:', perfilUsuario.email);
+  console.log('Tipo de usuário:', tipo);
+
+  // Elementos que futuramente serão exclusivos do administrador
+  document.querySelectorAll('[data-admin-only]').forEach(elemento => {
+    elemento.style.display = tipo === 'admin' ? '' : 'none';
+  });
+
+  // Elementos disponíveis para recepção
+  document.querySelectorAll('[data-recepcao]').forEach(elemento => {
+    elemento.style.display =
+      tipo === 'admin' || tipo === 'recepcao' ? '' : 'none';
+  });
+}
 
 /* =========================
    ABAS
