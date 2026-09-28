@@ -157,6 +157,7 @@ async function login() {
   }
 }
 
+$('loginBtn').addEventListener('click', login);
 
 let modoRecuperacao = false;
 
