@@ -68,6 +68,12 @@
           data-admin-only>
           Despesas
         </button>
+              <button
+        class="tab"
+        data-tab="relatorios"
+        data-admin-only>
+        Relatórios
+      </button>
 
       </nav>
 
@@ -491,6 +497,90 @@
         </div>
 
       </section>
+      <!-- =========================
+     RELATÓRIOS — ADMIN
+========================= -->
+
+<section
+  id="relatorios"
+  class="panel"
+  data-admin-only>
+
+  <div class="section-head">
+    <h2>Relatórios financeiros</h2>
+  </div>
+
+  <div class="card">
+
+    <h2>Período do relatório</h2>
+
+    <div class="form-grid">
+
+      <label>
+        Data inicial
+        <input
+          id="relatorioDataInicial"
+          type="date">
+      </label>
+
+      <label>
+        Data final
+        <input
+          id="relatorioDataFinal"
+          type="date">
+      </label>
+
+      <button
+        id="gerarRelatorioBtn"
+        class="full"
+        type="button">
+        Gerar relatório
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="grid metrics">
+
+    <div class="card">
+      <span>Receitas</span>
+      <strong id="relatorioReceitas">R$ 0,00</strong>
+    </div>
+
+    <div class="card">
+      <span>Despesas</span>
+      <strong id="relatorioDespesas">R$ 0,00</strong>
+    </div>
+
+    <div class="card">
+      <span>Saldo</span>
+      <strong id="relatorioSaldo">R$ 0,00</strong>
+    </div>
+
+    <div class="card">
+      <span>Pagamentos</span>
+      <strong id="relatorioQtdPagamentos">0</strong>
+    </div>
+
+    <div class="card">
+      <span>Despesas lançadas</span>
+      <strong id="relatorioQtdDespesas">0</strong>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Resumo financeiro</h2>
+
+    <p id="relatorioResumo">
+      Selecione o período e clique em "Gerar relatório".
+    </p>
+
+  </div>
+
+</section>
 
 
     </main>
