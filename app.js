@@ -158,11 +158,45 @@ async function login() {
 }
 
 
-$('loginBtn').onclick = login;
+async function verificarRecuperacaoSenha() {
+  const { data } = await db.auth.getSession();
 
-$('loginPass').addEventListener('keydown', e => {
-  if (e.key === 'Enter') login();
-});
+  if (!data.session) return;
+
+  const hash = window.location.hash || '';
+
+  if (hash.includes('type=recovery')) {
+    const novaSenha = prompt('Digite sua nova senha:');
+
+    if (!novaSenha) {
+      await db.auth.signOut();
+      return;
+    }
+
+    if (novaSenha.length < 6) {
+      alert('A senha deve ter pelo menos 6 caracteres.');
+      await db.auth.signOut();
+      return;
+    }
+
+    const { error } = await db.auth.updateUser({
+      password: novaSenha
+    });
+
+    if (error) {
+      alert('Não foi possível alterar a senha: ' + error.message);
+      return;
+    }
+
+    alert('Senha alterada com sucesso! Agora você pode entrar no sistema.');
+    await db.auth.signOut();
+
+    window.location.hash = '';
+    location.reload();
+  }
+}
+
+verificarRecuperacaoSenha();
 
 $('logoutBtn').onclick = async () => {
   await db.auth.signOut();
