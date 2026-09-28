@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -6,191 +8,591 @@
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="./style.css?v=5">
 </head>
-<body>  <div id="login" class="login-wrap">
+
+<body>
+
+  <div id="login" class="login-wrap">
     <div class="login-card">
       <div class="logo">🏋️</div>
       <h1>Controle da Academia</h1>
       <p>Primeira versão — painel administrativo</p>
+
       <input id="loginUser" placeholder="Usuário" autocomplete="username">
       <input id="loginPass" type="password" placeholder="Senha" autocomplete="current-password">
+
       <button id="loginBtn">Entrar</button>
-     </div>
-  </div>  <div id="app" class="hidden"><header class="topbar">
-  <div>
-    <h1>🏋️ Academia</h1>
-    <span id="today"></span>
+    </div>
   </div>
-  <button id="logoutBtn" class="secondary">Sair</button>
-</header>
 
-<main class="container">
 
- <nav class="tabs">
-  <button class="tab active" data-tab="dashboard" data-recepcao>Dashboard</button>
-  <button class="tab" data-tab="alunos" data-recepcao>Alunos</button>
-  <button class="tab" data-tab="pagamentos" data-recepcao>Pagamentos</button>
-</nav>
+  <div id="app" class="hidden">
 
-  <section id="dashboard" class="panel active">
-    <div class="grid metrics">
-      <div class="card"><span>Alunos ativos</span><strong id="mAlunos">0</strong></div>
-      <div class="card"><span>Previsto no mês</span><strong id="mPrevisto">R$ 0,00</strong></div>
-      <div class="card"><span>Recebido</span><strong id="mRecebido">R$ 0,00</strong></div>
-      <div class="card"><span>Em aberto</span><strong id="mAberto">R$ 0,00</strong></div>
-      <div class="card"><span>Atrasados</span><strong id="mAtrasados">0</strong></div>
-      <div class="card"><span>Antecipados</span><strong id="mAntecipados">0</strong></div>
-    </div>
-
-    <div class="card">
-      <h2>Resumo do mês</h2>
-      <p id="resumo"></p>
-      <div id="alertas"></div>
-    </div>
-  </section>
-
-  <section id="alunos" class="panel">
-
-    <div class="section-head">
-      <h2>Alunos</h2>
-      <button id="novoAlunoBtn">+ Novo aluno</button>
-    </div>
-
-    <input id="buscaAluno" class="search" placeholder="Pesquisar aluno...">
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Aluno</th>
-            <th>Telefone</th>
-            <th>Plano</th>
-            <th>Mensalidade</th>
-            <th>Vencimento</th>
-            <th>Status</th>
-            <th>Ação</th>
-          </tr>
-        </thead>
-        <tbody id="alunosBody"></tbody>
-      </table>
-    </div>
-
-  </section>
-
-  <section id="pagamentos" class="panel">
-
-    <div class="section-head">
-      <h2>Registrar pagamento</h2>
-    </div>
-
-    <form id="pagForm" class="form-grid">
-
-      <label>
-        Aluno
-        <select id="pagAluno" required></select>
-      </label>
-
-      <label>
-        Referente a
-        <input id="pagMes" type="month" required>
-      </label>
-
-      <label>
-        Valor
-        <input id="pagValor" type="number" step="0.01" required>
-      </label>
-
-      <label>
-        Data
-        <input id="pagData" type="date" required>
-      </label>
-
-      <label>
-        Forma
-        <select id="pagForma">
-          <option>Pix</option>
-          <option>Dinheiro</option>
-          <option>Cartão</option>
-          <option>Transferência</option>
-        </select>
-      </label>
-
-      <label>
-        Antecipado?
-        <select id="pagAnt">
-          <option>Não</option>
-          <option>Sim</option>
-        </select>
-      </label>
-
-      <label class="full">
-        Observação
-        <input id="pagObs">
-      </label>
-
-      <button class="full" type="submit">Registrar pagamento</button>
-
-    </form>
-
-    <div class="card">
-      <h2>Últimos pagamentos</h2>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Aluno</th>
-              <th>Referência</th>
-              <th>Valor</th>
-              <th>Forma</th>
-              <th>Registrado em</th>
-            </tr>
-          </thead>
-          <tbody id="pagBody"></tbody>
-        </table>
+    <header class="topbar">
+      <div>
+        <h1>🏋️ Academia</h1>
+        <span id="today"></span>
       </div>
 
+      <button id="logoutBtn" class="secondary">Sair</button>
+    </header>
+
+
+    <main class="container">
+
+      <nav class="tabs">
+
+        <button
+          class="tab active"
+          data-tab="dashboard"
+          data-recepcao>
+          Dashboard
+        </button>
+
+        <button
+          class="tab"
+          data-tab="alunos"
+          data-recepcao>
+          Alunos
+        </button>
+
+        <button
+          class="tab"
+          data-tab="pagamentos"
+          data-recepcao>
+          Pagamentos
+        </button>
+
+        <button
+          class="tab"
+          data-tab="despesas"
+          data-admin-only>
+          Despesas
+        </button>
+
+      </nav>
+
+
+      <!-- =========================
+           DASHBOARD
+      ========================== -->
+
+      <section id="dashboard" class="panel active">
+
+        <div class="grid metrics">
+
+          <div class="card">
+            <span>Alunos ativos</span>
+            <strong id="mAlunos">0</strong>
+          </div>
+
+          <div class="card">
+            <span>Previsto no mês</span>
+            <strong id="mPrevisto">R$ 0,00</strong>
+          </div>
+
+          <div class="card">
+            <span>Recebido</span>
+            <strong id="mRecebido">R$ 0,00</strong>
+          </div>
+
+          <div class="card">
+            <span>Em aberto</span>
+            <strong id="mAberto">R$ 0,00</strong>
+          </div>
+
+          <div class="card">
+            <span>Atrasados</span>
+            <strong id="mAtrasados">0</strong>
+          </div>
+
+          <div class="card">
+            <span>Antecipados</span>
+            <strong id="mAntecipados">0</strong>
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h2>Resumo do mês</h2>
+
+          <p id="resumo"></p>
+
+          <div id="alertas"></div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           ALUNOS
+      ========================== -->
+
+      <section id="alunos" class="panel">
+
+        <div class="section-head">
+
+          <h2>Alunos</h2>
+
+          <button id="novoAlunoBtn">
+            + Novo aluno
+          </button>
+
+        </div>
+
+
+        <input
+          id="buscaAluno"
+          class="search"
+          placeholder="Pesquisar aluno...">
+
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Aluno</th>
+                <th>Telefone</th>
+                <th>Plano</th>
+                <th>Mensalidade</th>
+                <th>Vencimento</th>
+                <th>Status</th>
+                <th>Ação</th>
+              </tr>
+
+            </thead>
+
+            <tbody id="alunosBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           PAGAMENTOS
+      ========================== -->
+
+      <section id="pagamentos" class="panel">
+
+        <div class="section-head">
+
+          <h2>Registrar pagamento</h2>
+
+        </div>
+
+
+        <form id="pagForm" class="form-grid">
+
+          <label>
+            Aluno
+            <select id="pagAluno" required></select>
+          </label>
+
+
+          <label>
+            Referente a
+            <input id="pagMes" type="month" required>
+          </label>
+
+
+          <label>
+            Valor
+            <input
+              id="pagValor"
+              type="number"
+              step="0.01"
+              required>
+          </label>
+
+
+          <label>
+            Data
+            <input id="pagData" type="date" required>
+          </label>
+
+
+          <label>
+            Forma
+
+            <select id="pagForma">
+
+              <option>Pix</option>
+              <option>Dinheiro</option>
+              <option>Cartão</option>
+              <option>Transferência</option>
+
+            </select>
+
+          </label>
+
+
+          <label>
+            Antecipado?
+
+            <select id="pagAnt">
+
+              <option>Não</option>
+              <option>Sim</option>
+
+            </select>
+
+          </label>
+
+
+          <label class="full">
+
+            Observação
+
+            <input id="pagObs">
+
+          </label>
+
+
+          <button
+            class="full"
+            type="submit">
+
+            Registrar pagamento
+
+          </button>
+
+        </form>
+
+
+        <div class="card">
+
+          <h2>Últimos pagamentos</h2>
+
+
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>Data</th>
+                  <th>Aluno</th>
+                  <th>Referência</th>
+                  <th>Valor</th>
+                  <th>Forma</th>
+                  <th>Registrado em</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="pagBody"></tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           DESPESAS — ADMIN
+      ========================== -->
+
+      <section
+        id="despesas"
+        class="panel"
+        data-admin-only>
+
+        <div class="section-head">
+
+          <h2>Despesas</h2>
+
+        </div>
+
+
+        <div class="card">
+
+          <h2>Nova despesa</h2>
+
+
+          <form
+            id="despesaForm"
+            class="form-grid">
+
+
+            <label>
+
+              Descrição
+
+              <input
+                id="despesaDescricao"
+                placeholder="Ex.: Energia elétrica"
+                required>
+
+            </label>
+
+
+            <label>
+
+              Valor
+
+              <input
+                id="despesaValor"
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0,00"
+                required>
+
+            </label>
+
+
+            <label>
+
+              Data
+
+              <input
+                id="despesaData"
+                type="date"
+                required>
+
+            </label>
+
+
+            <label>
+
+              Categoria
+
+              <select
+                id="despesaCategoria"
+                required>
+
+                <option value="">
+                  Selecione a categoria
+                </option>
+
+                <option value="Energia">
+                  Energia
+                </option>
+
+                <option value="Aluguel">
+                  Aluguel
+                </option>
+
+                <option value="Manutenção">
+                  Manutenção
+                </option>
+
+                <option value="Salários">
+                  Salários
+                </option>
+
+                <option value="Equipamentos">
+                  Equipamentos
+                </option>
+
+                <option value="Limpeza">
+                  Limpeza
+                </option>
+
+                <option value="Impostos">
+                  Impostos
+                </option>
+
+                <option value="Marketing">
+                  Marketing
+                </option>
+
+                <option value="Outros">
+                  Outros
+                </option>
+
+              </select>
+
+            </label>
+
+
+            <label class="full">
+
+              Observação
+
+              <input
+                id="despesaObservacao"
+                placeholder="Observação opcional">
+
+            </label>
+
+
+            <button
+              class="full"
+              type="submit">
+
+              Registrar despesa
+
+            </button>
+
+
+          </form>
+
+        </div>
+
+
+        <div class="grid metrics">
+
+          <div class="card">
+
+            <span>
+              Total de despesas no mês
+            </span>
+
+            <strong id="mDespesas">
+              R$ 0,00
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h2>Despesas cadastradas</h2>
+
+
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>Data</th>
+                  <th>Descrição</th>
+                  <th>Categoria</th>
+                  <th>Valor</th>
+                  <th>Observação</th>
+                </tr>
+
+              </thead>
+
+
+              <tbody id="despesasBody"></tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+    </main>
+
+  </div>
+
+
+  <!-- =========================
+       MODAL NOVO ALUNO
+  ========================== -->
+
+  <div id="modal" class="modal hidden">
+
+    <div class="modal-card">
+
+      <button
+        id="closeModal"
+        class="close">
+        ×
+      </button>
+
+
+      <h2>Novo aluno</h2>
+
+
+      <form id="alunoForm">
+
+        <input
+          id="nome"
+          placeholder="Nome completo"
+          required>
+
+
+        <input
+          id="cpf"
+          placeholder="CPF">
+
+
+        <input
+          id="telefone"
+          placeholder="Telefone">
+
+
+        <label>
+
+          Data de nascimento
+
+          <input
+            id="dataNascimento"
+            type="date">
+
+        </label>
+
+
+        <label>
+
+          Data de início
+
+          <input
+            id="dataInicio"
+            type="date">
+
+        </label>
+
+
+        <input
+          id="plano"
+          placeholder="Plano (ex.: Mensal, Trimestral...)">
+
+
+        <input
+          id="mensalidade"
+          type="number"
+          step="0.01"
+          placeholder="Mensalidade"
+          required>
+
+
+        <input
+          id="vencimento"
+          type="number"
+          min="1"
+          max="31"
+          placeholder="Dia do vencimento"
+          required>
+
+
+        <button type="submit">
+          Salvar aluno
+        </button>
+
+      </form>
+
     </div>
 
-  </section>
+  </div>
 
-</main>
 
-  </div>  <div id="modal" class="modal hidden"><div class="modal-card">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <button id="closeModal" class="close">×</button>
+  <script src="app.js?v=4"></script>
 
-  <h2>Novo aluno</h2>
+</body>
 
-  <form id="alunoForm">
-
-    <input id="nome" placeholder="Nome completo" required>
-
-    <input id="cpf" placeholder="CPF">
-
-    <input id="telefone" placeholder="Telefone">
-
-    <label>
-      Data de nascimento
-      <input id="dataNascimento" type="date">
-    </label>
-
-    <label>
-      Data de início
-      <input id="dataInicio" type="date">
-    </label>
-
-    <input id="plano" placeholder="Plano (ex.: Mensal, Trimestral...)">
-
-    <input id="mensalidade" type="number" step="0.01" placeholder="Mensalidade" required>
-
-    <input id="vencimento" type="number" min="1" max="31" placeholder="Dia do vencimento" required>
-
-    <button type="submit">Salvar aluno</button>
-
-  </form>
-
-</div>
-
-  </div>  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <script src="app.js?v=4"></script></body>
 </html>
