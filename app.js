@@ -1505,7 +1505,14 @@ $('alunoForm').addEventListener(
 
       vencimento,
 
-      ativo: true
+      data_expiracao:
+        $('dataExpiracao').value ||
+        null,
+
+      ativo:
+        $('dataExpiracao').value
+          ? $('dataExpiracao').value >= hoje()
+          : false
 
     };
 
