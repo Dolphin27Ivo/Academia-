@@ -1533,11 +1533,7 @@ function populatePagAluno() {
     '<option value="">Selecione o aluno</option>';
 
 
-  data.alunos
-
-    .filter(
-      a => a.ativo === true
-    )
+data.alunos
 
     .sort(
       (a, b) =>
