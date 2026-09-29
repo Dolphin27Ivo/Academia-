@@ -201,6 +201,17 @@ async function login() {
 }
 
 $('loginBtn').addEventListener('click', login);
+$('loginUser').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    login();
+  }
+});
+
+$('loginPass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    login();
+  }
+});
 
 
 let modoRecuperacao = false;
