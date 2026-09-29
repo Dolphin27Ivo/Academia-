@@ -904,6 +904,13 @@ $('buscaAluno').addEventListener(
 
   }
 );
+/* =========================
+   IMPORTAR EXCEL
+========================= */
+
+$('importarExcelBtn').addEventListener('click', () => {
+  $('arquivoExcel').click();
+});
 
 
 /* =========================
