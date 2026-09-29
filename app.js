@@ -1334,20 +1334,20 @@ if (
       return;
     }
 
- const registros = alunosImportados.map(alunoImportado => ({
+const registros = alunosImportados.map(alunoImportado => ({
   nome: alunoImportado.nome,
   cpf: alunoImportado.cpf,
   telefone: alunoImportado.telefone,
   data_nascimento: alunoImportado.data_nascimento,
-data_inicio: alunoImportado.data_inicio,
-data_expiracao: alunoImportado.data_expiracao,
-plano: alunoImportado.plano,
-valor_mensal: alunoImportado.valor_mensal,
-ativo: alunoImportado.data_expiracao
-  ? alunoImportado.data_expiracao >= new Date().toISOString().slice(0, 10)
-  : false
+  data_inicio: alunoImportado.data_inicio,
+  data_expiracao: alunoImportado.data_expiracao,
+  plano: alunoImportado.plano,
+  valor_mensal: alunoImportado.valor_mensal,
+  vencimento: alunoImportado.vencimento,
+  ativo: alunoImportado.data_expiracao
+    ? alunoImportado.data_expiracao >= new Date().toISOString().slice(0, 10)
+    : false
 }));
-
 const { error } = await db
   .from('alunos')
   .insert(registros);
