@@ -1894,15 +1894,23 @@ function gerarFechamentoMensal() {
      DESPESAS POR CATEGORIA
   ========================= */
 
-  const categorias = {};
+   const categorias = {};
 
   despesasPeriodo.forEach(d => {
 
     const categoria =
       d.categoria || 'Outros';
 
-    categorias[categoria] =
-      (categorias[categoria] || 0) +
+    if (!categorias[categoria]) {
+      categorias[categoria] = {
+        quantidade: 0,
+        total: 0
+      };
+    }
+
+    categorias[categoria].quantidade++;
+
+    categorias[categoria].total +=
       Number(d.valor || 0);
 
   });
@@ -1916,29 +1924,47 @@ function gerarFechamentoMensal() {
 
     const lista =
       Object.entries(categorias)
-        .sort((a, b) => b[1] - a[1]);
+        .sort((a, b) =>
+          b[1].total - a[1].total
+        );
 
 
     if (!lista.length) {
 
-      categoriasEl.innerHTML =
-        'Nenhuma despesa registrada no mês.';
+      categoriasEl.innerHTML = `
+        <tr>
+          <td colspan="3">
+            Nenhuma despesa registrada no mês.
+          </td>
+        </tr>
+      `;
 
     } else {
 
       categoriasEl.innerHTML =
-        lista.map(([categoria, valor]) => `
-          <p>
-            <strong>${esc(categoria)}</strong>:
-            ${money(valor)}
-          </p>
+        lista.map(([categoria, dados]) => `
+
+          <tr>
+
+            <td>
+              ${esc(categoria)}
+            </td>
+
+            <td>
+              ${dados.quantidade}
+            </td>
+
+            <td>
+              ${money(dados.total)}
+            </td>
+
+          </tr>
+
         `).join('');
 
     }
 
   }
-
-
   /* =========================
      RESUMO DO MÊS
   ========================= */
