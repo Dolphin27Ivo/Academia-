@@ -1803,6 +1803,7 @@ function prepararFluxoCaixa() {
 
 
 function gerarFluxoCaixa() {
+
   if (!exigirAdmin()) return;
 
   const dataInicial = $('fluxoDataInicial')?.value;
@@ -1818,11 +1819,20 @@ function gerarFluxoCaixa() {
     return;
   }
 
+  /* =========================
+     ENTRADAS
+  ========================= */
+
   const pagamentosPeriodo = data.pagamentos.filter(p =>
     p.data_pagamento &&
     p.data_pagamento >= dataInicial &&
     p.data_pagamento <= dataFinal
   );
+
+
+  /* =========================
+     SAÍDAS
+  ========================= */
 
   const despesasPeriodo = data.despesas.filter(d =>
     d.data_despesa &&
@@ -1830,62 +1840,163 @@ function gerarFluxoCaixa() {
     d.data_despesa <= dataFinal
   );
 
-  const receitas = pagamentosPeriodo.reduce(
-    (total, p) => total + Number(p.valor || 0),
+
+  /* =========================
+     CÁLCULOS
+  ========================= */
+
+  const entradas = pagamentosPeriodo.reduce(
+    (total, p) =>
+      total + Number(p.valor || 0),
     0
   );
 
-  const despesas = despesasPeriodo.reduce(
-    (total, d) => total + Number(d.valor || 0),
+
+  const saidas = despesasPeriodo.reduce(
+    (total, d) =>
+      total + Number(d.valor || 0),
     0
   );
 
-  const saldo = receitas - despesas;
 
-  if ($('fluxoReceitas')) {
-    $('fluxoReceitas').textContent = money(receitas);
+  const saldo = entradas - saidas;
+
+
+  /* =========================
+     RESUMO
+  ========================= */
+
+  if ($('fluxoEntradas')) {
+    $('fluxoEntradas').textContent =
+      money(entradas);
   }
 
-  if ($('fluxoDespesas')) {
-    $('fluxoDespesas').textContent = money(despesas);
+
+  if ($('fluxoSaidas')) {
+    $('fluxoSaidas').textContent =
+      money(saidas);
   }
+
 
   if ($('fluxoSaldo')) {
-    $('fluxoSaldo').textContent = money(saldo);
+    $('fluxoSaldo').textContent =
+      money(saldo);
   }
 
-  if ($('fluxoResumo')) {
-    $('fluxoResumo').innerHTML = `
-      <strong>Período:</strong>
-      ${formatDate(dataInicial)} até ${formatDate(dataFinal)}
 
-      <br><br>
-
-      <strong>Entradas:</strong>
-      ${money(receitas)}
-
-      <br>
-
-      <strong>Saídas:</strong>
-      ${money(despesas)}
-
-      <br><br>
-
-      <strong>Saldo do período:
-      ${money(saldo)}</strong>
-    `;
+  if ($('fluxoQtdEntradas')) {
+    $('fluxoQtdEntradas').textContent =
+      pagamentosPeriodo.length;
   }
+
+
+  if ($('fluxoQtdSaidas')) {
+    $('fluxoQtdSaidas').textContent =
+      despesasPeriodo.length;
+  }
+
+
+  /* =========================
+     MOVIMENTAÇÕES
+  ========================= */
+
+  const movimentos = [
+
+    ...pagamentosPeriodo.map(p => ({
+      data: p.data_pagamento,
+      tipo: 'Entrada',
+      descricao:
+        aluno(p.aluno_id)?.nome ||
+        'Pagamento',
+      categoria: 'Mensalidade',
+      valor: Number(p.valor || 0)
+    })),
+
+    ...despesasPeriodo.map(d => ({
+      data: d.data_despesa,
+      tipo: 'Saída',
+      descricao: d.descricao || 'Despesa',
+      categoria: d.categoria || 'Outros',
+      valor: Number(d.valor || 0)
+    }))
+
+  ];
+
+
+  movimentos.sort((a, b) =>
+    String(b.data).localeCompare(
+      String(a.data)
+    )
+  );
+
+
+  const body = $('fluxoBody');
+
+
+  if (body) {
+
+    if (!movimentos.length) {
+
+      body.innerHTML = `
+        <tr>
+          <td colspan="5">
+            Nenhuma movimentação encontrada
+            no período.
+          </td>
+        </tr>
+      `;
+
+    } else {
+
+      body.innerHTML =
+        movimentos.map(m => `
+
+          <tr>
+
+            <td>
+              ${formatDate(m.data)}
+            </td>
+
+            <td>
+              ${esc(m.tipo)}
+            </td>
+
+            <td>
+              ${esc(m.descricao)}
+            </td>
+
+            <td>
+              ${esc(m.categoria)}
+            </td>
+
+            <td>
+              ${money(m.valor)}
+            </td>
+
+          </tr>
+
+        `).join('');
+
+    }
+
+  }
+
 }
 
 
-const gerarFluxoBtn = $('gerarFluxoBtn');
+const gerarFluxoBtn =
+  $('gerarFluxoBtn');
+
 
 if (gerarFluxoBtn) {
+
   gerarFluxoBtn.addEventListener(
     'click',
     gerarFluxoCaixa
   );
+
 }
+
 
 prepararFluxoCaixa();
 
