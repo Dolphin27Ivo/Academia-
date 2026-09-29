@@ -1143,15 +1143,40 @@ $('arquivoExcel').addEventListener('change', async e => {
       return;
     }
 
-    console.log(
-      'Alunos prontos para importação:',
-      alunosImportados
-    );
+ const registros = alunosImportados.map(alunoImportado => ({
+  nome: alunoImportado.nome,
+  cpf: alunoImportado.cpf,
+  telefone: alunoImportado.telefone,
+  data_nascimento: alunoImportado.data_nascimento,
+  data_inicio: alunoImportado.data_inicio,
+  plano: alunoImportado.plano,
+  valor_mensal: alunoImportado.valor_mensal,
+  vencimento: alunoImportado.vencimento,
+  ativo: true
+}));
 
-    alert(
-      `${alunosImportados.length} aluno(s) foram lidos corretamente.\n\n` +
-      `A gravação no banco ainda não foi feita.`
-    );
+const { error } = await db
+  .from('alunos')
+  .insert(registros);
+
+if (error) {
+
+  console.error(error);
+
+  alert(
+    'Não foi possível importar os alunos:\n\n' +
+    error.message
+  );
+
+  return;
+}
+
+await carregarDados();
+
+alert(
+  `Importação concluída com sucesso!\n\n` +
+  `${registros.length} aluno(s) foram cadastrados.`
+);
 
   } catch (erro) {
 
