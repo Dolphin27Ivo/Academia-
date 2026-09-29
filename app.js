@@ -863,8 +863,7 @@ const lista =
       $('mensalidade').value =
         selecionado.valor_mensal ?? '';
 
-      $('vencimento').value =
-        selecionado.vencimento ?? '';
+
 
       $('modal').classList.remove('hidden');
 
