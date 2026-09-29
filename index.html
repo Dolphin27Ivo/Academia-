@@ -80,6 +80,12 @@
   data-admin-only>
   Fluxo de Caixa
 </button>
+        <button
+  class="tab"
+  data-tab="fechamentoMensal"
+  data-admin-only>
+  Fechamento Mensal
+</button>
 
       </nav>
 
@@ -449,7 +455,7 @@
 
             </button>
 
-
+  
           </form>
 
         </div>
@@ -603,6 +609,108 @@
   </div>
 
 </section>
+      <!-- =========================
+     FECHAMENTO MENSAL
+========================= -->
+
+<section
+  id="fechamentoMensal"
+  class="panel"
+  data-admin-only>
+
+  <div class="card">
+
+    <h2>Fechamento Mensal</h2>
+
+    <div class="form-grid">
+
+      <div>
+        <label for="fechamentoMes">
+          Mês
+        </label>
+
+        <input
+          type="month"
+          id="fechamentoMes">
+      </div>
+
+    </div>
+
+    <br>
+
+    <button
+      type="button"
+      id="gerarFechamentoBtn">
+      Gerar fechamento
+    </button>
+
+  </div>
+
+
+  <div class="grid metrics">
+
+    <div class="card">
+      <span>Receitas</span>
+      <strong id="fechamentoReceitas">
+        R$ 0,00
+      </strong>
+    </div>
+
+    <div class="card">
+      <span>Despesas</span>
+      <strong id="fechamentoDespesas">
+        R$ 0,00
+      </strong>
+    </div>
+
+    <div class="card">
+      <span>Saldo</span>
+      <strong id="fechamentoSaldo">
+        R$ 0,00
+      </strong>
+    </div>
+
+    <div class="card">
+      <span>Pagamentos</span>
+      <strong id="fechamentoQtdPagamentos">
+        0
+      </strong>
+    </div>
+
+    <div class="card">
+      <span>Despesas lançadas</span>
+      <strong id="fechamentoQtdDespesas">
+        0
+      </strong>
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>Despesas por categoria</h2>
+
+    <div id="fechamentoCategorias">
+      Nenhum dado disponível.
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>Resumo do mês</h2>
+
+    <div id="fechamentoResumo">
+      Selecione o mês e clique em
+      <strong>Gerar fechamento</strong>.
+    </div>
+
+  </div>
+
+</section>
+      
       <!-- =========================
      RELATÓRIOS — ADMIN
 ========================= -->
