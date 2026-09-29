@@ -35,3 +35,51 @@
 .table-wrap tbody tr:hover {
   background: #f8fafc;
 }
+/* =========================
+   TABELA DO HISTÓRICO
+========================= */
+
+#historicoModal .modal-card {
+  width: min(900px, 100%);
+}
+
+#historicoModal .table-wrap {
+  width: 100%;
+}
+
+#historicoModal .table-wrap table {
+  min-width: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+
+#historicoModal .table-wrap th,
+#historicoModal .table-wrap td {
+  padding: 10px 8px;
+  font-size: 13px;
+}
+
+#historicoModal .table-wrap th:nth-child(1),
+#historicoModal .table-wrap td:nth-child(1) {
+  width: 15%;
+}
+
+#historicoModal .table-wrap th:nth-child(2),
+#historicoModal .table-wrap td:nth-child(2) {
+  width: 18%;
+}
+
+#historicoModal .table-wrap th:nth-child(3),
+#historicoModal .table-wrap td:nth-child(3) {
+  width: 15%;
+}
+
+#historicoModal .table-wrap th:nth-child(4),
+#historicoModal .table-wrap td:nth-child(4) {
+  width: 17%;
+}
+
+#historicoModal .table-wrap th:nth-child(5),
+#historicoModal .table-wrap td:nth-child(5) {
+  width: 35%;
+}
