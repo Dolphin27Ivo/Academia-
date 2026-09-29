@@ -110,3 +110,12 @@
   object-fit: contain;
   border-radius: 6px;
 }
+/* BOTÕES DA LISTA DE ALUNOS */
+#alunosBody td:last-child {
+  white-space: nowrap;
+}
+
+#alunosBody td:last-child button {
+  display: inline-block;
+  margin: 2px;
+}
