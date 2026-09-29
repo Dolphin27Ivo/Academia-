@@ -678,8 +678,9 @@ function renderAlunos(filter = '') {
     filter.trim().toLowerCase();
 
 
-  const lista =
-    data.alunos.filter(a => {
+const lista =
+  data.alunos
+    .filter(a => {
 
       const texto = [
 
@@ -692,10 +693,16 @@ function renderAlunos(filter = '') {
         .join(' ')
         .toLowerCase();
 
-
       return texto.includes(termo);
 
-    });
+    })
+    .sort((a, b) =>
+      (a.nome || '').localeCompare(
+        b.nome || '',
+        'pt-BR',
+        { sensitivity: 'base' }
+      )
+    );
 
 
   if (!lista.length) {
@@ -720,7 +727,7 @@ function renderAlunos(filter = '') {
 
     tr.innerHTML = `
 
-      <td>${esc(a.nome)}</td>
+     <td>${esc((a.nome || '').toUpperCase())}</td>
 
       <td>${esc(a.telefone || '-')}</td>
 
