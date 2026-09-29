@@ -1456,29 +1456,7 @@ $('alunoForm').addEventListener(
         $('mensalidade').value
       );
 
-
-    const vencimento =
-      Number(
-        $('vencimento').value
-      );
-
-
-    if (
-      !nome ||
-      mensalidade < 0 ||
-      vencimento < 1 ||
-      vencimento > 31
-    ) {
-
-      alert(
-        'Confira o nome, a mensalidade e o dia de vencimento.'
-      );
-
-      return;
-
-    }
-
-
+  
     const novoAluno = {
 
       nome,
