@@ -869,21 +869,18 @@ function renderAlunos(filter = '') {
       };
 
     });
-  const fecharHistorico =
-    $('fecharHistorico');
 
-  if (fecharHistorico) {
+}
+$('fecharHistorico').addEventListener(
+  'click',
+  () => {
 
-    fecharHistorico.onclick = () => {
-
-      $('historicoModal')
-        .classList
-        .add('hidden');
-
-    };
+    $('historicoModal')
+      .classList
+      .add('hidden');
 
   }
-}
+);
 
 
 $('buscaAluno').addEventListener(
