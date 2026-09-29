@@ -768,7 +768,7 @@ function renderAlunos(filter = '') {
       };
 
     });
-    body
+  body
     .querySelectorAll('[data-historico]')
     .forEach(btn => {
 
@@ -785,49 +785,86 @@ function renderAlunos(filter = '') {
         }
 
         const pagamentosAluno =
-          data.pagamentos.filter(
-            p =>
-              String(p.aluno_id) ===
-              String(alunoSelecionado.id)
-          );
-
-        if (!pagamentosAluno.length) {
-          alert(
-            'Nenhum pagamento encontrado para este aluno.'
-          );
-          return;
-        }
-
-        const historico =
-          pagamentosAluno
+          data.pagamentos
+            .filter(
+              p =>
+                String(p.aluno_id) ===
+                String(alunoSelecionado.id)
+            )
             .sort((a, b) =>
               String(b.data_pagamento)
                 .localeCompare(
                   String(a.data_pagamento)
                 )
-            )
-            .map(p => {
+            );
 
-              const referencia =
-                p.data_vencimento
-                  ? p.data_vencimento.slice(0, 7)
-                  : '-';
+        $('historicoAlunoNome').textContent =
+          alunoSelecionado.nome;
 
-              return (
-                `${formatDate(p.data_pagamento)} | ` +
-                `Referência: ${referencia} | ` +
-                `${money(p.valor)} | ` +
-                `${p.forma_pagamento || '-'}`
-              );
+        const bodyHistorico =
+          $('historicoBody');
 
-            })
-            .join('\n');
+        if (!bodyHistorico) return;
 
-        alert(
-          `Histórico de pagamentos\n\n` +
-          `Aluno: ${alunoSelecionado.nome}\n\n` +
-          historico
-        );
+        if (!pagamentosAluno.length) {
+
+          bodyHistorico.innerHTML = `
+            <tr>
+              <td colspan="5">
+                Nenhum pagamento encontrado.
+              </td>
+            </tr>
+          `;
+
+        } else {
+
+          bodyHistorico.innerHTML =
+            pagamentosAluno
+              .map(p => {
+
+                const referencia =
+                  p.data_vencimento
+                    ? p.data_vencimento.slice(0, 7)
+                    : '-';
+
+                return `
+                  <tr>
+
+                    <td>
+                      ${formatDate(p.data_pagamento)}
+                    </td>
+
+                    <td>
+                      ${esc(referencia)}
+                    </td>
+
+                    <td>
+                      ${money(p.valor)}
+                    </td>
+
+                    <td>
+                      ${esc(
+                        p.forma_pagamento || '-'
+                      )}
+                    </td>
+
+                    <td>
+                      ${esc(
+                        observacaoLimpa(p) || '-'
+                      )}
+                    </td>
+
+                  </tr>
+                `;
+
+              })
+              .join('');
+
+        }
+
+        $('historicoModal')
+          .classList
+          .remove('hidden');
 
       };
 
