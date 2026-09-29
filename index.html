@@ -163,15 +163,34 @@
 
       <section id="alunos" class="panel">
 
-        <div class="section-head">
+<div class="section-head">
 
-          <h2>Alunos</h2>
+  <h2>Alunos</h2>
 
-          <button id="novoAlunoBtn">
-            + Novo aluno
-          </button>
+  <div class="alunos-acoes">
 
-        </div>
+    <button
+      id="importarExcelBtn"
+      type="button"
+      class="secondary">
+      📊 Importar Excel
+    </button>
+
+    <button
+      id="novoAlunoBtn"
+      type="button">
+      + Novo aluno
+    </button>
+
+  </div>
+
+</div>
+
+<input
+  id="arquivoExcel"
+  type="file"
+  accept=".xlsx,.xls"
+  class="hidden">
 
 
         <input
