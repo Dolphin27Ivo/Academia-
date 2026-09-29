@@ -1343,7 +1343,6 @@ data_inicio: alunoImportado.data_inicio,
 data_expiracao: alunoImportado.data_expiracao,
 plano: alunoImportado.plano,
 valor_mensal: alunoImportado.valor_mensal,
-vencimento: alunoImportado.vencimento,
 ativo: alunoImportado.data_expiracao
   ? alunoImportado.data_expiracao >= new Date().toISOString().slice(0, 10)
   : false
