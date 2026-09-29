@@ -94,3 +94,19 @@
   height: auto;
   margin: 0 auto 18px;
 }
+/* =========================
+   LOGO DO CABEÇALHO
+========================= */
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-topbar {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  border-radius: 6px;
+}
