@@ -911,7 +911,264 @@ $('buscaAluno').addEventListener(
 $('importarExcelBtn').addEventListener('click', () => {
   $('arquivoExcel').click();
 });
+$('arquivoExcel').addEventListener('change', async e => {
 
+  const arquivo = e.target.files[0];
+
+  if (!arquivo) return;
+
+  try {
+
+    const dados = await arquivo.arrayBuffer();
+
+    const workbook = XLSX.read(dados, {
+      type: 'array',
+      cellDates: true
+    });
+
+    const primeiraAba =
+      workbook.SheetNames[0];
+
+    const planilha =
+      workbook.Sheets[primeiraAba];
+
+    const linhas =
+      XLSX.utils.sheet_to_json(
+        planilha,
+        {
+          defval: '',
+          raw: false
+        }
+      );
+
+    if (!linhas.length) {
+      alert('A planilha está vazia.');
+      return;
+    }
+
+    const normalizarCabecalho = texto =>
+      String(texto || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim()
+        .toLowerCase();
+
+    const numero = valor => {
+
+      if (typeof valor === 'number') {
+        return valor;
+      }
+
+      const texto =
+        String(valor || '')
+          .replace(/R\$/gi, '')
+          .replace(/\s/g, '')
+          .replace(/\./g, '')
+          .replace(',', '.');
+
+      return Number(texto);
+    };
+
+    const dataExcel = valor => {
+
+      if (!valor) return null;
+
+      if (valor instanceof Date) {
+
+        return `${valor.getFullYear()}-${String(
+          valor.getMonth() + 1
+        ).padStart(2, '0')}-${String(
+          valor.getDate()
+        ).padStart(2, '0')}`;
+
+      }
+
+      const texto =
+        String(valor).trim();
+
+      if (/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) {
+
+        const [dia, mes, ano] =
+          texto.split('/');
+
+        return `${ano}-${mes}-${dia}`;
+
+      }
+
+      if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) {
+        return texto;
+      }
+
+      return null;
+    };
+
+    const alunosImportados =
+      linhas.map((linha, indice) => {
+
+        const campos = {};
+
+        Object.keys(linha).forEach(chave => {
+
+          campos[
+            normalizarCabecalho(chave)
+          ] = linha[chave];
+
+        });
+
+        const nome =
+          String(
+            campos['nome'] || ''
+          ).trim();
+
+        const cpf =
+          String(
+            campos['cpf'] || ''
+          ).trim();
+
+        const telefone =
+          String(
+            campos['telefone'] || ''
+          ).trim();
+
+        const dataNascimento =
+          dataExcel(
+            campos['data nascimento']
+          );
+
+        const dataInicio =
+          dataExcel(
+            campos['data inicio']
+          );
+
+        const plano =
+          String(
+            campos['plano'] || ''
+          ).trim();
+
+        const mensalidade =
+          numero(
+            campos['mensalidade']
+          );
+
+        const vencimento =
+          numero(
+            campos['vencimento']
+          );
+
+        return {
+          linha: indice + 2,
+          nome,
+          cpf: cpf || null,
+          telefone: telefone || null,
+          data_nascimento: dataNascimento,
+          data_inicio: dataInicio,
+          plano: plano || null,
+          valor_mensal: mensalidade,
+          vencimento,
+          ativo: true
+        };
+
+      });
+
+    const erros = [];
+
+    alunosImportados.forEach(alunoImportado => {
+
+      if (!alunoImportado.nome) {
+        erros.push(
+          `Linha ${alunoImportado.linha}: nome não informado.`
+        );
+      }
+
+      if (
+        !Number.isFinite(
+          alunoImportado.valor_mensal
+        ) ||
+        alunoImportado.valor_mensal < 0
+      ) {
+        erros.push(
+          `Linha ${alunoImportado.linha}: mensalidade inválida.`
+        );
+      }
+
+      if (
+        !Number.isInteger(
+          alunoImportado.vencimento
+        ) ||
+        alunoImportado.vencimento < 1 ||
+        alunoImportado.vencimento > 31
+      ) {
+        erros.push(
+          `Linha ${alunoImportado.linha}: vencimento inválido.`
+        );
+      }
+
+    });
+
+    if (erros.length) {
+
+      alert(
+        'Foram encontrados problemas na planilha:\n\n' +
+        erros.slice(0, 15).join('\n') +
+        (erros.length > 15
+          ? `\n\n... e mais ${erros.length - 15} erro(s).`
+          : '')
+      );
+
+      return;
+    }
+
+    const nomes =
+      alunosImportados
+        .slice(0, 5)
+        .map(a => `• ${a.nome}`)
+        .join('\n');
+
+    const mais =
+      alunosImportados.length > 5
+        ? `\n\n... e mais ${alunosImportados.length - 5} aluno(s).`
+        : '';
+
+    const confirmar =
+      confirm(
+        `Excel lido com sucesso!\n\n` +
+        `Alunos encontrados: ${alunosImportados.length}\n\n` +
+        `${nomes}${mais}\n\n` +
+        `Nenhum aluno foi cadastrado ainda.\n\n` +
+        `Deseja continuar?`
+      );
+
+    if (!confirmar) {
+      e.target.value = '';
+      return;
+    }
+
+    console.log(
+      'Alunos prontos para importação:',
+      alunosImportados
+    );
+
+    alert(
+      `${alunosImportados.length} aluno(s) foram lidos corretamente.\n\n` +
+      `A gravação no banco ainda não foi feita.`
+    );
+
+  } catch (erro) {
+
+    console.error(erro);
+
+    alert(
+      'Não foi possível ler o arquivo Excel.\n\n' +
+      erro.message
+    );
+
+  } finally {
+
+    e.target.value = '';
+
+  }
+
+});
 
 /* =========================
    CADASTRO DE ALUNO
