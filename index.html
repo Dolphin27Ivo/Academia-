@@ -913,6 +913,53 @@
     </div>
 
   </div>
+  <!-- =========================
+     MODAL HISTÓRICO
+========================= -->
+
+<div id="historicoModal" class="modal hidden">
+
+  <div class="modal-card">
+
+    <button
+      id="fecharHistorico"
+      class="close"
+      type="button">
+      ×
+    </button>
+
+    <h2>Histórico de pagamentos</h2>
+
+    <p>
+      <strong>Aluno:</strong>
+      <span id="historicoAlunoNome"></span>
+    </p>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Data</th>
+            <th>Referência</th>
+            <th>Valor</th>
+            <th>Forma</th>
+            <th>Observação</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="historicoBody"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
 
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
