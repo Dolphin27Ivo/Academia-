@@ -18,9 +18,14 @@
 }
 
 .table-wrap td {
-  padding: 12px 14px;
+  padding: 12px 20px;
   border-bottom: 1px solid #e5e7eb;
   color: #1f2937;
+}
+
+.table-wrap th:last-child,
+.table-wrap td:last-child {
+  text-align: right;
 }
 
 .table-wrap tbody tr:last-child td {
