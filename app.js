@@ -911,6 +911,78 @@ $('buscaAluno').addEventListener(
 $('importarExcelBtn').addEventListener('click', () => {
   $('arquivoExcel').click();
 });
+/* =========================
+   LIMPAR ALUNOS
+========================= */
+
+$('limparAlunosBtn').addEventListener('click', async () => {
+
+  if (!exigirAdmin()) return;
+
+  const confirmar = confirm(
+    '⚠️ ATENÇÃO!\n\n' +
+    'Você está prestes a excluir TODOS os alunos e TODOS os pagamentos/históricos.\n\n' +
+    'Essa ação NÃO poderá ser desfeita.\n\n' +
+    'Deseja realmente continuar?'
+  );
+
+  if (!confirmar) return;
+
+  const confirmarNovamente = confirm(
+    'CONFIRMAÇÃO FINAL\n\n' +
+    'Todos os alunos e todos os pagamentos serão apagados.\n\n' +
+    'Clique em OK somente se tiver certeza.'
+  );
+
+  if (!confirmarNovamente) return;
+
+  try {
+
+    const { error: erroPagamentos } = await db
+      .from('pagamentos')
+      .delete()
+      .not('id', 'is', null);
+
+    if (erroPagamentos) {
+      console.error(erroPagamentos);
+      alert(
+        'Não foi possível apagar os pagamentos.\n\n' +
+        erroPagamentos.message
+      );
+      return;
+    }
+
+    const { error: erroAlunos } = await db
+      .from('alunos')
+      .delete()
+      .not('id', 'is', null);
+
+    if (erroAlunos) {
+      console.error(erroAlunos);
+      alert(
+        'Os pagamentos foram apagados, mas não foi possível apagar os alunos.\n\n' +
+        erroAlunos.message
+      );
+      return;
+    }
+
+    await carregarDados();
+
+    alert(
+      'Limpeza concluída com sucesso!\n\n' +
+      'Todos os alunos e pagamentos foram removidos.'
+    );
+
+  } catch (erro) {
+
+    console.error(erro);
+
+    alert(
+      'Ocorreu um erro durante a limpeza.\n\n' +
+      erro.message
+    );
+  }
+});
 $('arquivoExcel').addEventListener('change', async e => {
 
   const arquivo = e.target.files[0];
