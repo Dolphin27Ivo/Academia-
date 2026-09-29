@@ -1039,6 +1039,11 @@ $('arquivoExcel').addEventListener('change', async e => {
           dataExcel(
             campos['data inicio']
           );
+        const dataExpiracao =
+    dataExcel(
+        campos['data expiracao'] ||
+        campos['data de expiracao']
+    );
 
         const plano =
           String(
@@ -1062,6 +1067,7 @@ $('arquivoExcel').addEventListener('change', async e => {
           telefone: telefone || null,
           data_nascimento: dataNascimento,
           data_inicio: dataInicio,
+          data_expiracao: dataExpiracao,
           plano: plano || null,
           valor_mensal: mensalidade,
           vencimento,
