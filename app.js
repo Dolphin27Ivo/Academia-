@@ -93,6 +93,43 @@ async function carregarDados() {
     alert('Erro ao carregar pagamentos: ' + erroPagamentos.message);
     return;
   }
+  /* =========================
+   ATUALIZAR STATUS PELA EXPIRAÇÃO
+========================= */
+
+const agora = new Date();
+
+const hojeISO =
+  `${agora.getFullYear()}-` +
+  `${String(agora.getMonth() + 1).padStart(2, '0')}-` +
+  `${String(agora.getDate()).padStart(2, '0')}`;
+
+for (const aluno of alunos) {
+
+  const ativoEsperado =
+    !!aluno.data_expiracao &&
+    aluno.data_expiracao >= hojeISO;
+
+  if (aluno.ativo !== ativoEsperado) {
+
+    const { error: erroStatus } = await db
+      .from('alunos')
+      .update({
+        ativo: ativoEsperado
+      })
+      .eq('id', aluno.id);
+
+    if (erroStatus) {
+      console.error(
+        'Erro ao atualizar status do aluno:',
+        aluno.nome,
+        erroStatus
+      );
+    } else {
+      aluno.ativo = ativoEsperado;
+    }
+  }
+}
 
   data.alunos = alunos || [];
   data.pagamentos = pagamentos || [];
