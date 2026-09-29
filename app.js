@@ -940,8 +940,19 @@ $('arquivoExcel').addEventListener('change', async e => {
           raw: false
         }
       );
+   const linhasFiltradas = linhas.filter(linha => {
+    const categoria = String(
+        linha['Categoria'] || ''
+    ).trim().toLowerCase();
 
-    if (!linhas.length) {
+    if (!categoria) {
+        return true;
+    }
+
+    return categoria === 'aluno';
+});
+
+    if (!linhasFiltradas.length) {
       alert('A planilha está vazia.');
       return;
     }
@@ -986,14 +997,16 @@ $('arquivoExcel').addEventListener('change', async e => {
       const texto =
         String(valor).trim();
 
-      if (/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) {
+if (/^\d{2}\/\d{2}\/\d{4}/.test(texto)) {
 
-        const [dia, mes, ano] =
-          texto.split('/');
+    const data = texto.split(' ')[0];
 
-        return `${ano}-${mes}-${dia}`;
+    const [dia, mes, ano] =
+        data.split('/');
 
-      }
+    return `${ano}-${mes}-${dia}`;
+
+}
 
       if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) {
         return texto;
@@ -1002,8 +1015,8 @@ $('arquivoExcel').addEventListener('change', async e => {
       return null;
     };
 
-    const alunosImportados =
-      linhas.map((linha, indice) => {
+   const alunosImportados =
+    linhasFiltradas.map((linha, indice) => {
 
         const campos = {};
 
@@ -1015,30 +1028,36 @@ $('arquivoExcel').addEventListener('change', async e => {
 
         });
 
-        const nome =
-          String(
-            campos['nome'] || ''
-          ).trim();
+      const nome =
+    String(
+        campos['nome'] ||
+        campos['usuario'] ||
+        ''
+    ).trim();
 
         const cpf =
           String(
             campos['cpf'] || ''
           ).trim();
 
-        const telefone =
-          String(
-            campos['telefone'] || ''
-          ).trim();
+       const telefone =
+    String(
+        campos['telefone'] ||
+        campos['celular'] ||
+        ''
+    ).trim();
 
-        const dataNascimento =
-          dataExcel(
-            campos['data nascimento']
-          );
+ const dataNascimento =
+    dataExcel(
+        campos['data nascimento'] ||
+        campos['nascimento']
+    );;
 
-        const dataInicio =
-          dataExcel(
-            campos['data inicio']
-          );
+const dataInicio =
+    dataExcel(
+        campos['data inicio'] ||
+        campos['inicio da liberacao']
+    );
         const dataExpiracao =
     dataExcel(
         campos['data expiracao'] ||
@@ -1050,15 +1069,15 @@ $('arquivoExcel').addEventListener('change', async e => {
             campos['plano'] || ''
           ).trim();
 
-        const mensalidade =
-          numero(
-            campos['mensalidade']
-          );
+       const mensalidade =
+    numero(
+        campos['mensalidade']
+    ) ?? 0;
 
-        const vencimento =
-          numero(
-            campos['vencimento']
-          );
+    const vencimento =
+    dataExpiracao
+        ? Number(dataExpiracao.split('-')[2])
+        : null;
 
         return {
           linha: indice + 2,
@@ -1097,13 +1116,16 @@ $('arquivoExcel').addEventListener('change', async e => {
         );
       }
 
-      if (
+if (
+    alunoImportado.vencimento !== null &&
+    (
         !Number.isInteger(
-          alunoImportado.vencimento
+            alunoImportado.vencimento
         ) ||
         alunoImportado.vencimento < 1 ||
         alunoImportado.vencimento > 31
-      ) {
+    )
+) {
         erros.push(
           `Linha ${alunoImportado.linha}: vencimento inválido.`
         );
