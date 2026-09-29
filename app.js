@@ -703,6 +703,13 @@ const lista =
         { sensitivity: 'base' }
       )
     );
+    .sort((a, b) =>
+      (a.nome || '').localeCompare(
+        b.nome || '',
+        'pt-BR',
+        { sensitivity: 'base' }
+      )
+    );
 
 
   if (!lista.length) {
