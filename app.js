@@ -696,22 +696,13 @@ const lista =
       return texto.includes(termo);
 
     })
-    .sort((a, b) =>
-      (a.nome || '').localeCompare(
-        b.nome || '',
-        'pt-BR',
-        { sensitivity: 'base' }
-      )
-    );
-    .sort((a, b) =>
-      (a.nome || '').localeCompare(
-        b.nome || '',
-        'pt-BR',
-        { sensitivity: 'base' }
-      )
-    );
-
-
+.sort((a, b) =>
+  (a.nome || '').localeCompare(
+    b.nome || '',
+    'pt-BR'
+  )
+)
+   
   if (!lista.length) {
 
     body.innerHTML = `
