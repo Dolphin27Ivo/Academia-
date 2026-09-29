@@ -760,6 +760,15 @@ function renderAlunos(filter = '') {
   <button
     type="button"
     class="secondary"
+    data-editar="${esc(a.id)}">
+
+    Editar
+
+  </button>
+
+  <button
+    type="button"
+    class="secondary"
     data-pagar="${esc(a.id)}">
 
     Financeiro
@@ -776,7 +785,6 @@ function renderAlunos(filter = '') {
   </button>
 
 </td>
-
     `;
 
 
@@ -816,6 +824,46 @@ function renderAlunos(filter = '') {
       };
 
     });
+  body
+  .querySelectorAll('[data-editar]')
+  .forEach(btn => {
+
+    btn.onclick = () => {
+
+      const selecionado =
+        aluno(btn.dataset.editar);
+
+      if (!selecionado) return;
+
+      $('nome').value =
+        selecionado.nome || '';
+
+      $('cpf').value =
+        selecionado.cpf || '';
+
+      $('telefone').value =
+        selecionado.telefone || '';
+
+      $('dataNascimento').value =
+        selecionado.data_nascimento || '';
+
+      $('dataInicio').value =
+        selecionado.data_inicio || '';
+
+      $('plano').value =
+        selecionado.plano || '';
+
+      $('mensalidade').value =
+        selecionado.valor_mensal ?? '';
+
+      $('vencimento').value =
+        selecionado.vencimento ?? '';
+
+      $('modal').classList.remove('hidden');
+
+    };
+
+  });
   body
     .querySelectorAll('[data-historico]')
     .forEach(btn => {
