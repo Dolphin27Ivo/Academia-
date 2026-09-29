@@ -707,18 +707,27 @@ function renderAlunos(filter = '') {
 
       </td>
 
-      <td>
+<td>
 
-        <button
-          type="button"
-          class="secondary"
-          data-pagar="${esc(a.id)}">
+  <button
+    type="button"
+    class="secondary"
+    data-pagar="${esc(a.id)}">
 
-          Financeiro
+    Financeiro
 
-        </button>
+  </button>
 
-      </td>
+  <button
+    type="button"
+    class="secondary"
+    data-historico="${esc(a.id)}">
+
+    Histórico
+
+  </button>
+
+</td>
 
     `;
 
