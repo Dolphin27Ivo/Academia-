@@ -83,3 +83,14 @@
 #historicoModal .table-wrap td:nth-child(5) {
   width: 35%;
 }
+/* =========================
+   LOGO DA ACADEMIA
+========================= */
+
+.logo-academia {
+  display: block;
+  width: 260px;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto 18px;
+}
