@@ -849,6 +849,8 @@ function renderAlunos(filter = '') {
 
       $('dataInicio').value =
         selecionado.data_inicio || '';
+      $('dataExpiracao').value =
+  selecionado.data_expiracao || '';
 
       $('plano').value =
         selecionado.plano || '';
