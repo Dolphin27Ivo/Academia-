@@ -768,6 +768,70 @@ function renderAlunos(filter = '') {
       };
 
     });
+    body
+    .querySelectorAll('[data-historico]')
+    .forEach(btn => {
+
+      btn.onclick = () => {
+
+        const alunoSelecionado =
+          aluno(
+            btn.dataset.historico
+          );
+
+        if (!alunoSelecionado) {
+          alert('Aluno não encontrado.');
+          return;
+        }
+
+        const pagamentosAluno =
+          data.pagamentos.filter(
+            p =>
+              String(p.aluno_id) ===
+              String(alunoSelecionado.id)
+          );
+
+        if (!pagamentosAluno.length) {
+          alert(
+            'Nenhum pagamento encontrado para este aluno.'
+          );
+          return;
+        }
+
+        const historico =
+          pagamentosAluno
+            .sort((a, b) =>
+              String(b.data_pagamento)
+                .localeCompare(
+                  String(a.data_pagamento)
+                )
+            )
+            .map(p => {
+
+              const referencia =
+                p.data_vencimento
+                  ? p.data_vencimento.slice(0, 7)
+                  : '-';
+
+              return (
+                `${formatDate(p.data_pagamento)} | ` +
+                `Referência: ${referencia} | ` +
+                `${money(p.valor)} | ` +
+                `${p.forma_pagamento || '-'}`
+              );
+
+            })
+            .join('\n');
+
+        alert(
+          `Histórico de pagamentos\n\n` +
+          `Aluno: ${alunoSelecionado.nome}\n\n` +
+          historico
+        );
+
+      };
+
+    });
 
 }
 
