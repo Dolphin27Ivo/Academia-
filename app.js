@@ -1764,6 +1764,241 @@ if (gerarRelatorioBtn) {
   );
 }
 
+/* =========================
+   FECHAMENTO MENSAL — ADMIN
+========================= */
+
+function prepararFechamentoMensal() {
+
+  const mes = $('fechamentoMes');
+
+  if (!mes) return;
+
+  if (!mes.value) {
+    mes.value = monthKey();
+  }
+
+}
+
+
+function gerarFechamentoMensal() {
+
+  if (!exigirAdmin()) return;
+
+  const mesSelecionado =
+    $('fechamentoMes')?.value;
+
+  if (!mesSelecionado) {
+    alert('Selecione o mês.');
+    return;
+  }
+
+  const partes = mesSelecionado.split('-');
+
+  const ano = Number(partes[0]);
+  const mes = Number(partes[1]);
+
+  const dataInicial =
+    `${ano}-${String(mes).padStart(2, '0')}-01`;
+
+  const ultimoDia =
+    new Date(ano, mes, 0).getDate();
+
+  const dataFinal =
+    `${ano}-${String(mes).padStart(2, '0')}-${String(ultimoDia).padStart(2, '0')}`;
+
+
+  /* =========================
+     PAGAMENTOS
+  ========================= */
+
+  const pagamentosPeriodo =
+    data.pagamentos.filter(p =>
+      p.data_pagamento &&
+      p.data_pagamento >= dataInicial &&
+      p.data_pagamento <= dataFinal
+    );
+
+
+  /* =========================
+     DESPESAS
+  ========================= */
+
+  const despesasPeriodo =
+    data.despesas.filter(d =>
+      d.data_despesa &&
+      d.data_despesa >= dataInicial &&
+      d.data_despesa <= dataFinal
+    );
+
+
+  /* =========================
+     CÁLCULOS
+  ========================= */
+
+  const receitas =
+    pagamentosPeriodo.reduce(
+      (total, p) =>
+        total + Number(p.valor || 0),
+      0
+    );
+
+
+  const despesas =
+    despesasPeriodo.reduce(
+      (total, d) =>
+        total + Number(d.valor || 0),
+      0
+    );
+
+
+  const saldo =
+    receitas - despesas;
+
+
+  /* =========================
+     RESUMO
+  ========================= */
+
+  if ($('fechamentoReceitas')) {
+    $('fechamentoReceitas').textContent =
+      money(receitas);
+  }
+
+
+  if ($('fechamentoDespesas')) {
+    $('fechamentoDespesas').textContent =
+      money(despesas);
+  }
+
+
+  if ($('fechamentoSaldo')) {
+    $('fechamentoSaldo').textContent =
+      money(saldo);
+  }
+
+
+  if ($('fechamentoQtdPagamentos')) {
+    $('fechamentoQtdPagamentos').textContent =
+      pagamentosPeriodo.length;
+  }
+
+
+  if ($('fechamentoQtdDespesas')) {
+    $('fechamentoQtdDespesas').textContent =
+      despesasPeriodo.length;
+  }
+
+
+  /* =========================
+     DESPESAS POR CATEGORIA
+  ========================= */
+
+  const categorias = {};
+
+  despesasPeriodo.forEach(d => {
+
+    const categoria =
+      d.categoria || 'Outros';
+
+    categorias[categoria] =
+      (categorias[categoria] || 0) +
+      Number(d.valor || 0);
+
+  });
+
+
+  const categoriasEl =
+    $('fechamentoCategorias');
+
+
+  if (categoriasEl) {
+
+    const lista =
+      Object.entries(categorias)
+        .sort((a, b) => b[1] - a[1]);
+
+
+    if (!lista.length) {
+
+      categoriasEl.innerHTML =
+        'Nenhuma despesa registrada no mês.';
+
+    } else {
+
+      categoriasEl.innerHTML =
+        lista.map(([categoria, valor]) => `
+          <p>
+            <strong>${esc(categoria)}</strong>:
+            ${money(valor)}
+          </p>
+        `).join('');
+
+    }
+
+  }
+
+
+  /* =========================
+     RESUMO DO MÊS
+  ========================= */
+
+  if ($('fechamentoResumo')) {
+
+    $('fechamentoResumo').innerHTML = `
+
+      <strong>Período:</strong>
+      ${formatDate(dataInicial)}
+      até
+      ${formatDate(dataFinal)}
+
+      <br><br>
+
+      Foram registrados
+      <strong>${pagamentosPeriodo.length}</strong>
+      pagamento(s), totalizando
+      <strong>${money(receitas)}</strong>
+      em receitas.
+
+      <br><br>
+
+      Foram registradas
+      <strong>${despesasPeriodo.length}</strong>
+      despesa(s), totalizando
+      <strong>${money(despesas)}</strong>
+      em despesas.
+
+      <br><br>
+
+      <strong>
+        Saldo do mês:
+        ${money(saldo)}
+      </strong>
+
+    `;
+
+  }
+
+}
+
+
+const gerarFechamentoBtn =
+  $('gerarFechamentoBtn');
+
+
+if (gerarFechamentoBtn) {
+
+  gerarFechamentoBtn.addEventListener(
+    'click',
+    gerarFechamentoMensal
+  );
+
+}
+
+
+prepararFechamentoMensal();
+
+
 prepararRelatorio();
 /* =========================
    FLUXO DE CAIXA — ADMIN
