@@ -1506,8 +1506,7 @@ $('alunoForm').addEventListener(
       valor_mensal:
         mensalidade,
 
-      vencimento,
-
+      
       data_expiracao:
         $('dataExpiracao').value ||
         null,
