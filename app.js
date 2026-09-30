@@ -839,6 +839,7 @@ const lista =
         aluno(btn.dataset.editar);
 
       if (!selecionado) return;
+      alunoEditandoId = selecionado.id;
 
       $('nome').value =
         selecionado.nome || '';
@@ -1391,7 +1392,7 @@ alert(
 /* =========================
    CADASTRO DE ALUNO
 ========================= */
-
+let alunoEditandoId = null;
 function abrirModal() {
 
   $('alunoForm').reset();
@@ -1510,12 +1511,29 @@ $('alunoForm').addEventListener(
       'Salvando...';
 
 
-    const { error } =
-      await db
-        .from('alunos')
-        .insert([
-          novoAluno
-        ]);
+let error;
+
+if (alunoEditandoId) {
+
+  const resultado =
+    await db
+      .from('alunos')
+      .update(novoAluno)
+      .eq('id', alunoEditandoId);
+
+  error = resultado.error;
+
+} else {
+
+  const resultado =
+    await db
+      .from('alunos')
+      .insert([
+        novoAluno
+      ]);
+
+  error = resultado.error;
+}
 
 
     botao.disabled = false;
@@ -1541,6 +1559,7 @@ $('alunoForm').addEventListener(
     fecharModal();
 
     await carregarDados();
+    alunoEditandoId = null;
 
     alert(
       'Aluno cadastrado com sucesso!'
