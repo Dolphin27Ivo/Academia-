@@ -3063,11 +3063,11 @@ async function cadastrarUsuario() {
 
   const nome = $('usuarioNome')?.value.trim();
   const email = $('usuarioEmail')?.value.trim().toLowerCase();
-  const senha = $('usuarioSenha')?.value;
+  const senha = $('usuarioSenha')?.value || '';
   const tipo = $('usuarioTipo')?.value;
   const ativo = $('usuarioAtivo')?.value === 'true';
 
-  const editando = !!usuarioEditandoId;
+  const editando = Boolean(usuarioEditandoId);
 
   if (!nome || !email || !tipo) {
     alert('Preencha nome, e-mail e permissão.');
@@ -3100,62 +3100,50 @@ async function cadastrarUsuario() {
 
   try {
 
-    let data;
-    let error;
+    let resultado;
 
     if (editando) {
 
-      const resultado = await db.functions.invoke(
+      resultado = await db.functions.invoke(
         'editar-usuario',
         {
           body: {
             id: usuarioEditandoId,
-            nome,
-            email,
-            senha,
-            tipo,
-            ativo
+            nome: nome,
+            email: email,
+            senha: senha,
+            tipo: tipo,
+            ativo: ativo
           }
         }
       );
-
-      data = resultado.data;
-      error = resultado.error;
 
     } else {
 
-      const resultado = await db.functions.invoke(
+      resultado = await db.functions.invoke(
         'criar-usuario',
         {
           body: {
-            nome,
-            email,
-            senha,
-            tipo,
-            ativo
+            nome: nome,
+            email: email,
+            senha: senha,
+            tipo: tipo,
+            ativo: ativo
           }
         }
       );
 
-      data = resultado.data;
-      error = resultado.error;
     }
 
-    if (error) {
-
-      console.error(
-        'Erro na operação de usuário:',
-        error
-      );
-
+    if (resultado.error) {
       throw new Error(
-        error.message ||
+        resultado.error.message ||
         'Não foi possível salvar o usuário.'
       );
     }
 
-    if (data?.error) {
-      throw new Error(data.error);
+    if (resultado.data?.error) {
+      throw new Error(resultado.data.error);
     }
 
     usuarioEditandoId = null;
@@ -3179,7 +3167,10 @@ async function cadastrarUsuario() {
 
   } catch (erro) {
 
-    console.error(erro);
+    console.error(
+      'Erro ao salvar usuário:',
+      erro
+    );
 
     alert(
       'Não foi possível salvar o usuário:\n\n' +
@@ -3190,14 +3181,11 @@ async function cadastrarUsuario() {
 
     if (botao) {
       botao.disabled = false;
-
-      if (!usuarioEditandoId) {
-        botao.textContent = 'Cadastrar usuário';
-      }
     }
 
   }
 
+}
 async function carregarUsuarios() {
 
   const body = $('usuariosBody');
