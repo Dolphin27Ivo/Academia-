@@ -13,13 +13,12 @@
 
   <div id="login" class="login-wrap">
     <div class="login-card">
-<img
-  src="./logo-academia.jpeg"
-  alt="Academia Novo Fitness"
-  class="logo-academia">
+      <img
+        src="./logo-academia.jpeg"
+        alt="Academia Novo Fitness"
+        class="logo-academia">
 
-<h1>Academia Novo Fitness</h1>
-      
+      <h1>Academia Novo Fitness</h1>
 
       <input id="loginUser" placeholder="Usuário" autocomplete="username">
       <input id="loginPass" type="password" placeholder="Senha" autocomplete="current-password">
@@ -31,20 +30,20 @@
 
   <div id="app" class="hidden">
 
-<header class="topbar">
-  <div class="topbar-brand">
+    <header class="topbar">
+      <div class="topbar-brand">
 
-    <img
-      src="./logo-academia.jpeg"
-      alt="Academia Novo Fitness"
-      class="logo-topbar">
+        <img
+          src="./logo-academia.jpeg"
+          alt="Academia Novo Fitness"
+          class="logo-topbar">
 
-    <div>
-      <h1>Academia Novo Fitness</h1>
-      <span id="today"></span>
-    </div>
+        <div>
+          <h1>Academia Novo Fitness</h1>
+          <span id="today"></span>
+        </div>
 
-  </div>
+      </div>
 
       <button id="logoutBtn" class="secondary">Sair</button>
     </header>
@@ -81,24 +80,34 @@
           data-admin-only>
           Despesas
         </button>
-              <button
-        class="tab"
-        data-tab="relatorios"
-        data-admin-only>
-        Relatórios
-      </button>
+
         <button
-  class="tab"
-  data-tab="fluxoCaixa"
-  data-admin-only>
-  Fluxo de Caixa
-</button>
+          class="tab"
+          data-tab="relatorios"
+          data-admin-only>
+          Relatórios
+        </button>
+
         <button
-  class="tab"
-  data-tab="fechamentoMensal"
-  data-admin-only>
-  Fechamento Mensal
-</button>
+          class="tab"
+          data-tab="fluxoCaixa"
+          data-admin-only>
+          Fluxo de Caixa
+        </button>
+
+        <button
+          class="tab"
+          data-tab="fechamentoMensal"
+          data-admin-only>
+          Fechamento Mensal
+        </button>
+
+        <button
+          class="tab"
+          data-tab="usuarios"
+          data-admin-only>
+          Usuários
+        </button>
 
       </nav>
 
@@ -117,19 +126,19 @@
           </div>
 
           <div class="card" data-admin-only>
-  <span>Previsto no mês</span>
-  <strong id="mPrevisto">R$ 0,00</strong>
-</div>
+            <span>Previsto no mês</span>
+            <strong id="mPrevisto">R$ 0,00</strong>
+          </div>
 
-<div class="card" data-admin-only>
-  <span>Recebido</span>
-  <strong id="mRecebido">R$ 0,00</strong>
-</div>
+          <div class="card" data-admin-only>
+            <span>Recebido</span>
+            <strong id="mRecebido">R$ 0,00</strong>
+          </div>
 
-<div class="card" data-admin-only>
-  <span>Em aberto</span>
-  <strong id="mAberto">R$ 0,00</strong>
-</div>
+          <div class="card" data-admin-only>
+            <span>Em aberto</span>
+            <strong id="mAberto">R$ 0,00</strong>
+          </div>
 
           <div class="card">
             <span>Atrasados</span>
@@ -163,43 +172,43 @@
 
       <section id="alunos" class="panel">
 
-<div class="section-head">
+        <div class="section-head">
 
-  <h2>Alunos</h2>
+          <h2>Alunos</h2>
 
-  <div class="alunos-acoes">
+          <div class="alunos-acoes">
 
-<button
-  id="importarExcelBtn"
-  type="button"
-  class="secondary"
-  data-admin-only>
-  📊 Importar Excel
-</button>
-    
-    <button
-  id="limparAlunosBtn"
-  type="button"
-  class="secondary"
-  data-admin-only>
-  🗑️ Limpar alunos
-</button>
+            <button
+              id="importarExcelBtn"
+              type="button"
+              class="secondary"
+              data-admin-only>
+              📊 Importar Excel
+            </button>
 
-    <button
-      id="novoAlunoBtn"
-      type="button">
-      + Novo aluno
-    </button>
+            <button
+              id="limparAlunosBtn"
+              type="button"
+              class="secondary"
+              data-admin-only>
+              🗑️ Limpar alunos
+            </button>
 
-  </div>
+            <button
+              id="novoAlunoBtn"
+              type="button">
+              + Novo aluno
+            </button>
 
-</div>
+          </div>
 
-<input
-  id="arquivoExcel"
-  type="file"
-  accept=".xlsx,.xls,.csv"
-  class="hidden">
+        </div>
+
+        <input
+          id="arquivoExcel"
+          type="file"
+          accept=".xlsx,.xls,.csv"
+          class="hidden">
 
 
         <input
@@ -496,7 +505,6 @@
 
             </button>
 
-  
           </form>
 
         </div>
@@ -550,315 +558,422 @@
         </div>
 
       </section>
+
+
       <!-- =========================
-     FLUXO DE CAIXA – ADMIN
-========================= -->
+           FLUXO DE CAIXA – ADMIN
+      ========================== -->
 
-<section
-  id="fluxoCaixa"
-  class="panel"
-  data-admin-only>
+      <section
+        id="fluxoCaixa"
+        class="panel"
+        data-admin-only>
 
-  <div class="section-head">
-    <h2>Fluxo de Caixa</h2>
-  </div>
+        <div class="section-head">
+          <h2>Fluxo de Caixa</h2>
+        </div>
 
-  <div class="card">
+        <div class="card">
 
-    <h2>Período do fluxo de caixa</h2>
+          <h2>Período do fluxo de caixa</h2>
 
-    <div class="form-grid">
+          <div class="form-grid">
 
-      <label>
-        Data inicial
-        <input
-          type="date"
-          id="fluxoDataInicial">
-      </label>
+            <label>
+              Data inicial
+              <input
+                type="date"
+                id="fluxoDataInicial">
+            </label>
 
-      <label>
-        Data final
-        <input
-          type="date"
-          id="fluxoDataFinal">
-      </label>
+            <label>
+              Data final
+              <input
+                type="date"
+                id="fluxoDataFinal">
+            </label>
 
-      <button
-        type="button"
-        class="full"
-        id="gerarFluxoBtn">
-        Gerar fluxo de caixa
-      </button>
+            <button
+              type="button"
+              class="full"
+              id="gerarFluxoBtn">
+              Gerar fluxo de caixa
+            </button>
 
-    </div>
+          </div>
 
-  </div>
+        </div>
 
-  <div class="grid metrics">
+        <div class="grid metrics">
 
-    <div class="card">
-      <span>Total de entradas</span>
-      <strong id="fluxoEntradas">R$ 0,00</strong>
-    </div>
+          <div class="card">
+            <span>Total de entradas</span>
+            <strong id="fluxoEntradas">R$ 0,00</strong>
+          </div>
 
-    <div class="card">
-      <span>Total de saídas</span>
-      <strong id="fluxoSaidas">R$ 0,00</strong>
-    </div>
+          <div class="card">
+            <span>Total de saídas</span>
+            <strong id="fluxoSaidas">R$ 0,00</strong>
+          </div>
 
-    <div class="card">
-      <span>Saldo do período</span>
-      <strong id="fluxoSaldo">R$ 0,00</strong>
-    </div>
+          <div class="card">
+            <span>Saldo do período</span>
+            <strong id="fluxoSaldo">R$ 0,00</strong>
+          </div>
 
-    <div class="card">
-      <span>Entradas registradas</span>
-      <strong id="fluxoQtdEntradas">0</strong>
-    </div>
+          <div class="card">
+            <span>Entradas registradas</span>
+            <strong id="fluxoQtdEntradas">0</strong>
+          </div>
 
-    <div class="card">
-      <span>Saídas registradas</span>
-      <strong id="fluxoQtdSaidas">0</strong>
-    </div>
+          <div class="card">
+            <span>Saídas registradas</span>
+            <strong id="fluxoQtdSaidas">0</strong>
+          </div>
 
-  </div>
+        </div>
 
-  <div class="card">
+        <div class="card">
 
-    <h2>Movimentações do período</h2>
+          <h2>Movimentações do período</h2>
 
-    <div class="table-wrap">
+          <div class="table-wrap">
 
-      <table>
+            <table>
 
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Tipo</th>
-            <th>Descrição</th>
-            <th>Categoria</th>
-            <th>Valor</th>
-          </tr>
-        </thead>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Tipo</th>
+                  <th>Descrição</th>
+                  <th>Categoria</th>
+                  <th>Valor</th>
+                </tr>
+              </thead>
 
-        <tbody id="fluxoBody"></tbody>
+              <tbody id="fluxoBody"></tbody>
 
-      </table>
+            </table>
 
-    </div>
+          </div>
 
-  </div>
+        </div>
 
-</section>
+      </section>
+
+
       <!-- =========================
-     FECHAMENTO MENSAL
-========================= -->
+           FECHAMENTO MENSAL
+      ========================== -->
 
-<section
-  id="fechamentoMensal"
-  class="panel"
-  data-admin-only>
+      <section
+        id="fechamentoMensal"
+        class="panel"
+        data-admin-only>
 
-  <div class="card">
+        <div class="card">
 
-    <h2>Fechamento Mensal</h2>
+          <h2>Fechamento Mensal</h2>
 
-    <div class="form-grid">
+          <div class="form-grid">
 
-      <div>
-        <label for="fechamentoMes">
-          Mês
-        </label>
+            <div>
+              <label for="fechamentoMes">
+                Mês
+              </label>
 
-        <input
-          type="month"
-          id="fechamentoMes">
-      </div>
+              <input
+                type="month"
+                id="fechamentoMes">
+            </div>
 
-    </div>
+          </div>
 
-    <br>
+          <br>
 
-    <button
-      type="button"
-      id="gerarFechamentoBtn">
-      Gerar fechamento
-    </button>
+          <button
+            type="button"
+            id="gerarFechamentoBtn">
+            Gerar fechamento
+          </button>
 
-  </div>
-
-
-  <div class="grid metrics">
-
-    <div class="card">
-      <span>Receitas</span>
-      <strong id="fechamentoReceitas">
-        R$ 0,00
-      </strong>
-    </div>
-
-    <div class="card">
-      <span>Despesas</span>
-      <strong id="fechamentoDespesas">
-        R$ 0,00
-      </strong>
-    </div>
-
-    <div class="card">
-      <span>Saldo</span>
-      <strong id="fechamentoSaldo">
-        R$ 0,00
-      </strong>
-    </div>
-
-    <div class="card">
-      <span>Pagamentos</span>
-      <strong id="fechamentoQtdPagamentos">
-        0
-      </strong>
-    </div>
-
-    <div class="card">
-      <span>Despesas lançadas</span>
-      <strong id="fechamentoQtdDespesas">
-        0
-      </strong>
-    </div>
-
-  </div>
+        </div>
 
 
-<div class="card">
+        <div class="grid metrics">
 
-  <h2>Despesas por categoria</h2>
+          <div class="card">
+            <span>Receitas</span>
+            <strong id="fechamentoReceitas">
+              R$ 0,00
+            </strong>
+          </div>
 
-  <div class="table-wrapper">
+          <div class="card">
+            <span>Despesas</span>
+            <strong id="fechamentoDespesas">
+              R$ 0,00
+            </strong>
+          </div>
 
-    <table>
+          <div class="card">
+            <span>Saldo</span>
+            <strong id="fechamentoSaldo">
+              R$ 0,00
+            </strong>
+          </div>
 
-      <thead>
-        <tr>
-          <th>Categoria</th>
-          <th>Quantidade</th>
-          <th>Total</th>
-        </tr>
-      </thead>
+          <div class="card">
+            <span>Pagamentos</span>
+            <strong id="fechamentoQtdPagamentos">
+              0
+            </strong>
+          </div>
 
-      <tbody id="fechamentoCategorias">
+          <div class="card">
+            <span>Despesas lançadas</span>
+            <strong id="fechamentoQtdDespesas">
+              0
+            </strong>
+          </div>
 
-        <tr>
-          <td colspan="3">
-            Nenhum dado disponível.
-          </td>
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </div>
-
-</div>
+        </div>
 
 
-  <div class="card">
+        <div class="card">
 
-    <h2>Resumo do mês</h2>
+          <h2>Despesas por categoria</h2>
 
-    <div id="fechamentoResumo">
-      Selecione o mês e clique em
-      <strong>Gerar fechamento</strong>.
-    </div>
+          <div class="table-wrapper">
 
-  </div>
+            <table>
 
-</section>
-      
+              <thead>
+                <tr>
+                  <th>Categoria</th>
+                  <th>Quantidade</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+
+              <tbody id="fechamentoCategorias">
+
+                <tr>
+                  <td colspan="3">
+                    Nenhum dado disponível.
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h2>Resumo do mês</h2>
+
+          <div id="fechamentoResumo">
+            Selecione o mês e clique em
+            <strong>Gerar fechamento</strong>.
+          </div>
+
+        </div>
+
+      </section>
+
+
       <!-- =========================
-     RELATÓRIOS — ADMIN
-========================= -->
+           RELATÓRIOS — ADMIN
+      ========================== -->
 
-<section
-  id="relatorios"
-  class="panel"
-  data-admin-only>
+      <section
+        id="relatorios"
+        class="panel"
+        data-admin-only>
 
-  <div class="section-head">
-    <h2>Relatórios financeiros</h2>
-  </div>
+        <div class="section-head">
+          <h2>Relatórios financeiros</h2>
+        </div>
 
-  <div class="card">
+        <div class="card">
 
-    <h2>Período do relatório</h2>
+          <h2>Período do relatório</h2>
 
-    <div class="form-grid">
+          <div class="form-grid">
 
-      <label>
-        Data inicial
-        <input
-          id="relatorioDataInicial"
-          type="date">
-      </label>
+            <label>
+              Data inicial
+              <input
+                id="relatorioDataInicial"
+                type="date">
+            </label>
 
-      <label>
-        Data final
-        <input
-          id="relatorioDataFinal"
-          type="date">
-      </label>
+            <label>
+              Data final
+              <input
+                id="relatorioDataFinal"
+                type="date">
+            </label>
 
-      <button
-        id="gerarRelatorioBtn"
-        class="full"
-        type="button">
-        Gerar relatório
-      </button>
+            <button
+              id="gerarRelatorioBtn"
+              class="full"
+              type="button">
+              Gerar relatório
+            </button>
 
-    </div>
+          </div>
 
-  </div>
+        </div>
 
-  <div class="grid metrics">
+        <div class="grid metrics">
 
-    <div class="card">
-      <span>Receitas</span>
-      <strong id="relatorioReceitas">R$ 0,00</strong>
-    </div>
+          <div class="card">
+            <span>Receitas</span>
+            <strong id="relatorioReceitas">R$ 0,00</strong>
+          </div>
 
-    <div class="card">
-      <span>Despesas</span>
-      <strong id="relatorioDespesas">R$ 0,00</strong>
-    </div>
+          <div class="card">
+            <span>Despesas</span>
+            <strong id="relatorioDespesas">R$ 0,00</strong>
+          </div>
 
-    <div class="card">
-      <span>Saldo</span>
-      <strong id="relatorioSaldo">R$ 0,00</strong>
-    </div>
+          <div class="card">
+            <span>Saldo</span>
+            <strong id="relatorioSaldo">R$ 0,00</strong>
+          </div>
 
-    <div class="card">
-      <span>Pagamentos</span>
-      <strong id="relatorioQtdPagamentos">0</strong>
-    </div>
+          <div class="card">
+            <span>Pagamentos</span>
+            <strong id="relatorioQtdPagamentos">0</strong>
+          </div>
 
-    <div class="card">
-      <span>Despesas lançadas</span>
-      <strong id="relatorioQtdDespesas">0</strong>
-    </div>
+          <div class="card">
+            <span>Despesas lançadas</span>
+            <strong id="relatorioQtdDespesas">0</strong>
+          </div>
 
-  </div>
+        </div>
 
-  <div class="card">
+        <div class="card">
 
-    <h2>Resumo financeiro</h2>
+          <h2>Resumo financeiro</h2>
 
-    <p id="relatorioResumo">
-      Selecione o período e clique em "Gerar relatório".
-    </p>
+          <p id="relatorioResumo">
+            Selecione o período e clique em "Gerar relatório".
+          </p>
 
-  </div>
+        </div>
 
-</section>
+      </section>
 
+
+      <!-- =========================
+           USUÁRIOS — ADMIN
+      ========================== -->
+
+      <section
+        id="usuarios"
+        class="panel"
+        data-admin-only>
+
+        <div class="section-head">
+          <h2>Usuários do sistema</h2>
+        </div>
+
+        <div class="card">
+
+          <h2>Novo usuário</h2>
+
+          <form id="usuarioForm" class="form-grid">
+
+            <label>
+              Nome
+              <input
+                id="usuarioNome"
+                type="text"
+                placeholder="Nome completo"
+                required>
+            </label>
+
+            <label>
+              E-mail
+              <input
+                id="usuarioEmail"
+                type="email"
+                placeholder="email@exemplo.com"
+                required>
+            </label>
+
+            <label>
+              Senha
+              <input
+                id="usuarioSenha"
+                type="password"
+                placeholder="Mínimo de 6 caracteres"
+                minlength="6"
+                required>
+            </label>
+
+            <label>
+              Permissão
+              <select id="usuarioTipo" required>
+                <option value="recepcao">Recepção</option>
+                <option value="admin">Administrador</option>
+              </select>
+            </label>
+
+            <label>
+              Status
+              <select id="usuarioAtivo" required>
+                <option value="true">Ativo</option>
+                <option value="false">Inativo</option>
+              </select>
+            </label>
+
+            <button
+              type="submit"
+              class="full"
+              id="cadastrarUsuarioBtn">
+              Cadastrar usuário
+            </button>
+
+          </form>
+
+        </div>
+
+        <div class="card">
+
+          <h2>Usuários cadastrados</h2>
+
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>E-mail</th>
+                  <th>Permissão</th>
+                  <th>Status</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+
+              <tbody id="usuariosBody"></tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
 
     </main>
 
@@ -921,15 +1036,16 @@
             type="date">
 
         </label>
-            <label>
 
-      Data de expiração
+        <label>
 
-      <input
-        id="dataExpiracao"
-        type="date">
+          Data de expiração
 
-    </label>
+          <input
+            id="dataExpiracao"
+            type="date">
+
+        </label>
 
 
         <input
@@ -945,8 +1061,6 @@
           required>
 
 
-
-
         <button type="submit">
           Salvar aluno
         </button>
@@ -956,53 +1070,55 @@
     </div>
 
   </div>
+
+
   <!-- =========================
-     MODAL HISTÓRICO
-========================= -->
+       MODAL HISTÓRICO
+  ========================== -->
 
-<div id="historicoModal" class="modal hidden">
+  <div id="historicoModal" class="modal hidden">
 
-  <div class="modal-card">
+    <div class="modal-card">
 
-    <button
-      id="fecharHistorico"
-      class="close"
-      type="button">
-      ×
-    </button>
+      <button
+        id="fecharHistorico"
+        class="close"
+        type="button">
+        ×
+      </button>
 
-    <h2>Histórico de pagamentos</h2>
+      <h2>Histórico de pagamentos</h2>
 
-    <p>
-      <strong>Aluno:</strong>
-      <span id="historicoAlunoNome"></span>
-    </p>
+      <p>
+        <strong>Aluno:</strong>
+        <span id="historicoAlunoNome"></span>
+      </p>
 
-    <div class="table-wrap">
+      <div class="table-wrap">
 
-      <table>
+        <table>
 
-        <thead>
+          <thead>
 
-          <tr>
-            <th>Data</th>
-            <th>Referência</th>
-            <th>Valor</th>
-            <th>Forma</th>
-            <th>Observação</th>
-          </tr>
+            <tr>
+              <th>Data</th>
+              <th>Referência</th>
+              <th>Valor</th>
+              <th>Forma</th>
+              <th>Observação</th>
+            </tr>
 
-        </thead>
+          </thead>
 
-        <tbody id="historicoBody"></tbody>
+          <tbody id="historicoBody"></tbody>
 
-      </table>
+        </table>
+
+      </div>
 
     </div>
 
   </div>
-
-</div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
