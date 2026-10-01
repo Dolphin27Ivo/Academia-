@@ -3229,6 +3229,7 @@ async function carregarUsuarios() {
     </tr>
   `).join('');
 }
+let usuarioEditandoId = null;
 // ==============================
 // EDITAR USUÁRIO
 // ==============================
@@ -3244,6 +3245,7 @@ document.addEventListener('click', e => {
   if (!exigirAdmin()) return;
 
   const id = botao.dataset.id;
+  usuarioEditandoId = id;
 
   const usuario =
     window.usuariosAcademia?.find(
