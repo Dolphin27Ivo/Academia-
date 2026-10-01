@@ -3171,6 +3171,7 @@ async function carregarUsuarios() {
     .from('usuarios')
     .select('id, nome, email, tipo, ativo')
     .order('nome', { ascending: true });
+  window.usuariosAcademia = usuarios || [];
 
   if (error) {
 
