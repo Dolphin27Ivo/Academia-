@@ -16,6 +16,26 @@ const hoje = () => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 
+function getStatusAluno(aluno) {
+  if (!aluno.data_expiracao) return 'inativo';
+
+  const hojeData = new Date();
+  hojeData.setHours(0, 0, 0, 0);
+
+  const vencimento = new Date(aluno.data_expiracao + 'T00:00:00');
+  vencimento.setHours(0, 0, 0, 0);
+
+  const diferencaDias = Math.floor(
+    (hojeData - vencimento) / (1000 * 60 * 60 * 24)
+  );
+
+  if (diferencaDias <= 0) return 'ativo';
+  if (diferencaDias <= 2) return 'bloqueado';
+
+  return 'inativo';
+}
+
+
 function monthKey(d = new Date()) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
@@ -97,18 +117,10 @@ async function carregarDados() {
    ATUALIZAR STATUS PELA EXPIRAÇÃO
 ========================= */
 
-const agora = new Date();
-
-const hojeISO =
-  `${agora.getFullYear()}-` +
-  `${String(agora.getMonth() + 1).padStart(2, '0')}-` +
-  `${String(agora.getDate()).padStart(2, '0')}`;
-
 for (const aluno of alunos) {
 
-  const ativoEsperado =
-    !!aluno.data_expiracao &&
-    aluno.data_expiracao >= hojeISO;
+  const statusAtual = getStatusAluno(aluno);
+  const ativoEsperado = statusAtual === 'ativo';
 
   if (aluno.ativo !== ativoEsperado) {
 
@@ -481,6 +493,29 @@ function abrirAba(nome) {
 
 
 /* =========================
+   STATUS DOS ALUNOS
+========================= */
+
+(function aplicarEstilosStatus() {
+  if (document.getElementById('statusAlunoStyles')) return;
+
+  const style = document.createElement('style');
+  style.id = 'statusAlunoStyles';
+  style.textContent = `
+    .status.bloqueado {
+      background: #fff3cd;
+      color: #856404;
+    }
+    .status.inativo {
+      background: #f8d7da;
+      color: #842029;
+    }
+  `;
+  document.head.appendChild(style);
+})();
+
+
+/* =========================
    RENDER GERAL
 ========================= */
 
@@ -517,10 +552,34 @@ function renderDashboard() {
   const hojeData = hoje();
 
 
-  const ativos =
-    data.alunos.filter(
-      a => a.ativo === true
-    );
+  const ativos = data.alunos.filter(
+    a => getStatusAluno(a) === 'ativo'
+  );
+
+  const bloqueados = data.alunos.filter(
+    a => getStatusAluno(a) === 'bloqueado'
+  );
+
+  const inativos = data.alunos.filter(
+    a => getStatusAluno(a) === 'inativo'
+  );
+
+  // Cria os cartões de Bloqueados e Inativos sem exigir alteração no index.html.
+  const metrics = document.querySelector('.metrics');
+  if (metrics) {
+    if (!$('mBloqueados')) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = '<span>Alunos bloqueados</span><strong id="mBloqueados">0</strong>';
+      metrics.insertBefore(card, metrics.children[1] || null);
+    }
+    if (!$('mInativos')) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = '<span>Alunos inativos</span><strong id="mInativos">0</strong>';
+      metrics.insertBefore(card, metrics.children[2] || null);
+    }
+  }
 
 
   const previsto =
@@ -594,6 +653,14 @@ function renderDashboard() {
   if ($('mAlunos'))
     $('mAlunos').textContent =
       ativos.length;
+
+  if ($('mBloqueados'))
+    $('mBloqueados').textContent =
+      bloqueados.length;
+
+  if ($('mInativos'))
+    $('mInativos').textContent =
+      inativos.length;
 
 
   if ($('mPrevisto'))
@@ -722,6 +789,15 @@ const lista =
     const tr =
       document.createElement('tr');
 
+    const status = getStatusAluno(a);
+    const statusClasse = status;
+    const statusTexto =
+      status === 'ativo'
+        ? 'Ativo'
+        : status === 'bloqueado'
+          ? 'Bloqueado'
+          : 'Inativo';
+
 
     tr.innerHTML = `
 
@@ -744,17 +820,9 @@ const lista =
       <td>
 
         <span
-          class="status ${
-            a.ativo
-              ? 'ativo'
-              : 'inativo'
-          }">
+          class="status ${statusClasse}">
 
-          ${
-            a.ativo
-              ? 'Ativo'
-              : 'Inativo'
-          }
+          ${statusTexto}
 
         </span>
 
@@ -1254,7 +1322,9 @@ const dataInicio =
           plano: plano || null,
           valor_mensal: mensalidade,
           vencimento,
-          ativo: true
+          ativo: dataExpiracao
+            ? getStatusAluno({ data_expiracao: dataExpiracao }) === 'ativo'
+            : false
         };
 
       });
@@ -1346,7 +1416,7 @@ const registros = alunosImportados.map(alunoImportado => ({
   valor_mensal: alunoImportado.valor_mensal,
   vencimento: alunoImportado.vencimento,
   ativo: alunoImportado.data_expiracao
-    ? alunoImportado.data_expiracao >= new Date().toISOString().slice(0, 10)
+    ? getStatusAluno({ data_expiracao: alunoImportado.data_expiracao }) === 'ativo'
     : false
 }));
 const { error } = await db
@@ -1492,7 +1562,9 @@ $('alunoForm').addEventListener(
 
       ativo:
         $('dataExpiracao').value
-          ? $('dataExpiracao').value >= hoje()
+          ? getStatusAluno({
+              data_expiracao: $('dataExpiracao').value
+            }) === 'ativo'
           : false
 
     };
