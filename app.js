@@ -506,7 +506,10 @@ document
       if (painel) {
         painel.classList.add('active');
       }
-
+localStorage.setItem(
+  'ultimaAbaAcademia',
+  button.dataset.tab
+);
 
       if (
         button.dataset.tab ===
