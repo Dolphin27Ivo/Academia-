@@ -1587,13 +1587,16 @@ let error;
 
 if (alunoEditandoId) {
 
-  const resultado =
-    await db
-      .from('alunos')
-      .update(novoAluno)
-      .eq('id', alunoEditandoId);
+const resultado = await db
+  .from('alunos')
+  .update(novoAluno)
+  .eq('id', alunoEditandoId)
+  .select()
+  .single();
 
-  error = resultado.error;
+  console.log('RESULTADO UPDATE:', resultado);
+
+error = resultado.error;
 
 } else {
 
