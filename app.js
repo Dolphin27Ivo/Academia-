@@ -3229,7 +3229,50 @@ async function carregarUsuarios() {
     </tr>
   `).join('');
 }
+// ==============================
+// EDITAR USUÁRIO
+// ==============================
 
+document.addEventListener('click', e => {
+
+  const botao = e.target.closest(
+    '.btn-editar-usuario'
+  );
+
+  if (!botao) return;
+
+  if (!exigirAdmin()) return;
+
+  const id = botao.dataset.id;
+
+  const usuario =
+    window.usuariosAcademia?.find(
+      u => u.id === id
+    );
+
+  if (!usuario) {
+    alert('Usuário não encontrado.');
+    return;
+  }
+
+  $('usuarioNome').value =
+    usuario.nome || '';
+
+  $('usuarioEmail').value =
+    usuario.email || '';
+
+  $('usuarioTipo').value =
+    usuario.tipo || 'recepcao';
+
+  $('usuarioAtivo').value =
+    usuario.ativo ? 'true' : 'false';
+
+  $('usuarioSenha').value = '';
+
+  $('cadastrarUsuarioBtn').textContent =
+    'Salvar alterações';
+
+});
 
 const usuarioForm = $('usuarioForm');
 
