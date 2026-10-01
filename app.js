@@ -261,6 +261,69 @@ $('loginPass').addEventListener('keydown', e => {
     login();
   }
 });
+// ==============================
+// RECUPERAR SESSÃO AO ATUALIZAR
+// ==============================
+
+async function restaurarSessao() {
+
+  const {
+    data: { session },
+    error
+  } = await db.auth.getSession();
+
+  if (error) {
+    console.error('Erro ao recuperar sessão:', error);
+    return;
+  }
+
+  if (!session?.user) {
+    return;
+  }
+
+  try {
+
+    usuarioLogado = session.user;
+
+    const { data: perfil, error: perfilError } = await db
+      .from('usuarios')
+      .select('*')
+      .eq('id', usuarioLogado.id)
+      .eq('ativo', true)
+      .single();
+
+    if (perfilError || !perfil) {
+
+      await db.auth.signOut();
+
+      usuarioLogado = null;
+      perfilUsuario = null;
+
+      return;
+    }
+
+    perfilUsuario = perfil;
+
+    aplicarPermissoes();
+
+    $('login').classList.add('hidden');
+    $('app').classList.remove('hidden');
+
+    await carregarDados();
+
+  } catch (erro) {
+
+    console.error(
+      'Erro ao restaurar sessão:',
+      erro
+    );
+
+    await db.auth.signOut();
+
+  }
+}
+
+restaurarSessao();
 
 
 let modoRecuperacao = false;
