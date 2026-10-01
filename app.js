@@ -3217,7 +3217,14 @@ async function carregarUsuarios() {
       <td>
         ${usuario.ativo ? 'Ativo' : 'Inativo'}
       </td>
-      <td>-</td>
+     <td>
+  <button
+    type="button"
+    class="btn-editar-usuario"
+    data-id="${usuario.id}">
+    Editar
+  </button>
+</td>
     </tr>
   `).join('');
 }
