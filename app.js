@@ -3067,10 +3067,137 @@ async function cadastrarUsuario() {
   const tipo = $('usuarioTipo')?.value;
   const ativo = $('usuarioAtivo')?.value === 'true';
 
-  if (!nome || !email || !senha || !tipo) {
-    alert('Preencha nome, e-mail, senha e permissão.');
+  const editando = !!usuarioEditandoId;
+
+  if (!nome || !email || !tipo) {
+    alert('Preencha nome, e-mail e permissão.');
     return;
   }
+
+  if (!editando && !senha) {
+    alert('Informe uma senha para o novo usuário.');
+    return;
+  }
+
+  if (senha && senha.length < 6) {
+    alert('A senha deve ter pelo menos 6 caracteres.');
+    return;
+  }
+
+  if (!['admin', 'recepcao'].includes(tipo)) {
+    alert('Permissão de usuário inválida.');
+    return;
+  }
+
+  const botao = $('cadastrarUsuarioBtn');
+
+  if (botao) {
+    botao.disabled = true;
+    botao.textContent = editando
+      ? 'Salvando...'
+      : 'Cadastrando...';
+  }
+
+  try {
+
+    let data;
+    let error;
+
+    if (editando) {
+
+      const resultado = await db.functions.invoke(
+        'editar-usuario',
+        {
+          body: {
+            id: usuarioEditandoId,
+            nome,
+            email,
+            senha,
+            tipo,
+            ativo
+          }
+        }
+      );
+
+      data = resultado.data;
+      error = resultado.error;
+
+    } else {
+
+      const resultado = await db.functions.invoke(
+        'criar-usuario',
+        {
+          body: {
+            nome,
+            email,
+            senha,
+            tipo,
+            ativo
+          }
+        }
+      );
+
+      data = resultado.data;
+      error = resultado.error;
+    }
+
+    if (error) {
+
+      console.error(
+        'Erro na operação de usuário:',
+        error
+      );
+
+      throw new Error(
+        error.message ||
+        'Não foi possível salvar o usuário.'
+      );
+    }
+
+    if (data?.error) {
+      throw new Error(data.error);
+    }
+
+    usuarioEditandoId = null;
+
+    $('usuarioForm').reset();
+
+    $('usuarioTipo').value = 'recepcao';
+    $('usuarioAtivo').value = 'true';
+
+    if (botao) {
+      botao.textContent = 'Cadastrar usuário';
+    }
+
+    alert(
+      editando
+        ? 'Usuário atualizado com sucesso!'
+        : 'Usuário criado com sucesso!'
+    );
+
+    await carregarUsuarios();
+
+  } catch (erro) {
+
+    console.error(erro);
+
+    alert(
+      'Não foi possível salvar o usuário:\n\n' +
+      erro.message
+    );
+
+  } finally {
+
+    if (botao) {
+      botao.disabled = false;
+
+      if (!usuarioEditandoId) {
+        botao.textContent = 'Cadastrar usuário';
+      }
+    }
+
+  }
+}
 
   if (senha.length < 6) {
     alert('A senha deve ter pelo menos 6 caracteres.');
