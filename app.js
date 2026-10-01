@@ -302,14 +302,23 @@ async function restaurarSessao() {
       return;
     }
 
-    perfilUsuario = perfil;
+perfilUsuario = perfil;
 
-    aplicarPermissoes();
+aplicarPermissoes();
 
-    $('login').classList.add('hidden');
-    $('app').classList.remove('hidden');
+$('login').classList.add('hidden');
+$('app').classList.remove('hidden');
 
-    await carregarDados();
+await carregarDados();
+
+const ultimaAba =
+  localStorage.getItem('ultimaAbaAcademia');
+
+if (ultimaAba) {
+  abrirAba(ultimaAba);
+} else {
+  abrirAba('dashboard');
+}
 
   } catch (erro) {
 
