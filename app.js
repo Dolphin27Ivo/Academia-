@@ -2947,6 +2947,215 @@ if (gerarFluxoBtn) {
 
 
 prepararFluxoCaixa();
+/* =========================
+   USUÁRIOS — ADMIN
+========================= */
+
+async function cadastrarUsuario() {
+
+  if (!exigirAdmin()) return;
+
+  const nome = $('usuarioNome')?.value.trim();
+  const email = $('usuarioEmail')?.value.trim().toLowerCase();
+  const senha = $('usuarioSenha')?.value;
+  const tipo = $('usuarioTipo')?.value;
+  const ativo = $('usuarioAtivo')?.value === 'true';
+
+  if (!nome || !email || !senha || !tipo) {
+    alert('Preencha nome, e-mail, senha e permissão.');
+    return;
+  }
+
+  if (senha.length < 6) {
+    alert('A senha deve ter pelo menos 6 caracteres.');
+    return;
+  }
+
+  if (!['admin', 'recepcao'].includes(tipo)) {
+    alert('Permissão de usuário inválida.');
+    return;
+  }
+
+  const botao = $('cadastrarUsuarioBtn');
+
+  if (botao) {
+    botao.disabled = true;
+    botao.textContent = 'Cadastrando...';
+  }
+
+  try {
+
+    const { data, error } = await db.functions.invoke(
+      'criar-usuario',
+      {
+        body: {
+          nome,
+          name: nome,
+          email,
+          password: senha,
+          senha,
+          tipo,
+          ativo
+        }
+      }
+    );
+
+    if (error) {
+      console.error(
+        'Erro na Edge Function criar-usuario:',
+        error
+      );
+
+      throw new Error(
+        error.message ||
+        'Não foi possível criar o usuário.'
+      );
+    }
+
+    if (data?.error) {
+      throw new Error(data.error);
+    }
+
+    $('usuarioForm').reset();
+
+    $('usuarioTipo').value = 'recepcao';
+    $('usuarioAtivo').value = 'true';
+
+    alert('Usuário criado com sucesso!');
+
+    await carregarUsuarios();
+
+  } catch (erro) {
+
+    console.error(erro);
+
+    alert(
+      'Não foi possível cadastrar o usuário:\n\n' +
+      erro.message
+    );
+
+  } finally {
+
+    if (botao) {
+      botao.disabled = false;
+      botao.textContent = 'Cadastrar usuário';
+    }
+
+  }
+}
+
+
+async function carregarUsuarios() {
+
+  const body = $('usuariosBody');
+
+  if (!body) return;
+
+  if (!exigirAdmin()) return;
+
+  body.innerHTML = `
+    <tr>
+      <td colspan="5">
+        Carregando usuários...
+      </td>
+    </tr>
+  `;
+
+  const { data: usuarios, error } = await db
+    .from('usuarios')
+    .select('id, nome, email, tipo, ativo')
+    .order('nome', { ascending: true });
+
+  if (error) {
+
+    console.error(
+      'Erro ao carregar usuários:',
+      error
+    );
+
+    body.innerHTML = `
+      <tr>
+        <td colspan="5">
+          Não foi possível carregar a lista de usuários.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  if (!usuarios?.length) {
+
+    body.innerHTML = `
+      <tr>
+        <td colspan="5">
+          Nenhum usuário cadastrado.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  body.innerHTML = usuarios.map(usuario => `
+    <tr>
+      <td>${esc(usuario.nome || '-')}</td>
+      <td>${esc(usuario.email || '-')}</td>
+      <td>
+        ${
+          usuario.tipo === 'admin'
+            ? 'Administrador'
+            : 'Recepção'
+        }
+      </td>
+      <td>
+        ${usuario.ativo ? 'Ativo' : 'Inativo'}
+      </td>
+      <td>-</td>
+    </tr>
+  `).join('');
+}
+
+
+const usuarioForm = $('usuarioForm');
+
+if (usuarioForm) {
+
+  usuarioForm.addEventListener(
+    'submit',
+    async e => {
+
+      e.preventDefault();
+
+      await cadastrarUsuario();
+
+    }
+  );
+
+}
+
+
+const abaUsuarios = document.querySelector(
+  '.tab[data-tab="usuarios"]'
+);
+
+if (abaUsuarios) {
+
+  abaUsuarios.addEventListener(
+    'click',
+    async () => {
+
+      if (!exigirAdmin()) {
+        abrirAba('dashboard');
+        return;
+      }
+
+      await carregarUsuarios();
+
+    }
+  );
+
+}
 
 /* =========================
    INICIALIZAÇÃO
