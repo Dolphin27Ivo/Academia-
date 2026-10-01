@@ -182,13 +182,16 @@ let perfilUsuario = null;
 
 async function login() {
 
-  const email = $('loginUser').value.trim();
-  const senha = $('loginPass').value;
+const identificador =
+  $('loginUser').value.trim();
 
-  if (!email || !senha) {
-    alert('Informe o e-mail e a senha.');
-    return;
-  }
+const senha =
+  $('loginPass').value;
+
+if (!identificador || !senha) {
+  alert('Informe o e-mail ou nome de usuário e a senha.');
+  return;
+}
 
   const botao = $('loginBtn');
   botao.disabled = true;
