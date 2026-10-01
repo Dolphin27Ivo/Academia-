@@ -198,11 +198,39 @@ if (!identificador || !senha) {
 
   try {
 
-    const { data: authData, error: authError } =
-      await db.auth.signInWithPassword({
-        email,
-        password: senha
-      });
+let email = identificador;
+
+if (!identificador.includes('@')) {
+
+  const { data: resultado, error: erroBusca } =
+    await db.functions.invoke(
+      'login-usuario',
+      {
+        body: {
+          nome: identificador
+        }
+      }
+    );
+
+  if (erroBusca) {
+    throw new Error(
+      erroBusca.message ||
+      'Não foi possível localizar o usuário.'
+    );
+  }
+
+  if (resultado?.error) {
+    throw new Error(resultado.error);
+  }
+
+  email = resultado.email;
+}
+
+const { data: authData, error: authError } =
+  await db.auth.signInWithPassword({
+    email,
+    password: senha
+  });
 
     if (authError) throw authError;
 
