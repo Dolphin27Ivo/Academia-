@@ -675,12 +675,41 @@ function renderDashboard() {
   // Cria os cartões de Bloqueados e Inativos sem exigir alteração no index.html.
   const metrics = document.querySelector('.metrics');
   if (metrics) {
-    if (!$('mBloqueados')) {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = '<span>Alunos bloqueados</span><strong id="mBloqueados">0</strong>';
-      metrics.insertBefore(card, metrics.children[1] || null);
+if (!$('mBloqueados')) {
+
+  const card = document.createElement('div');
+
+  card.className = 'card';
+
+  card.style.cursor = 'pointer';
+
+  card.title = 'Clique para ver os alunos bloqueados';
+
+  card.innerHTML =
+    '<span>Alunos bloqueados</span>' +
+    '<strong id="mBloqueados">0</strong>';
+
+  card.onclick = () => {
+
+    filtroStatusAlunos = 'bloqueado';
+
+    const busca = $('buscaAluno');
+
+    if (busca) {
+      busca.value = '';
     }
+
+    abrirAba('alunos');
+
+    renderAlunos('');
+
+  };
+
+  metrics.insertBefore(
+    card,
+    metrics.children[1] || null
+  );
+}
     if (!$('mInativos')) {
       const card = document.createElement('div');
       card.className = 'card';
@@ -839,7 +868,43 @@ function renderDashboard() {
    LISTA DE ALUNOS
 ========================= */
 
+let filtroStatusAlunos = '';
+
 function renderAlunos(filter = '') {
+
+  const body = $('alunosBody');
+
+  if (!body) return;
+
+  body.innerHTML = '';
+
+  const termo = filter.trim().toLowerCase();
+
+  const lista = data.alunos
+    .filter(a => {
+
+      const texto = [
+        a.nome,
+        a.telefone,
+        a.cpf,
+        a.plano
+      ]
+        .join(' ')
+        .toLowerCase();
+
+      const correspondeTexto =
+        texto.includes(termo);
+
+      const correspondeStatus =
+        !filtroStatusAlunos ||
+        getStatusAluno(a) === filtroStatusAlunos;
+
+      return (
+        correspondeTexto &&
+        correspondeStatus
+      );
+
+    })
 
   const body =
     $('alunosBody');
