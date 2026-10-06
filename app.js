@@ -870,6 +870,8 @@ if (!$('mBloqueados')) {
 
 let filtroStatusAlunos = '';
 
+let filtroStatusAlunos = '';
+
 function renderAlunos(filter = '') {
 
   const body = $('alunosBody');
@@ -913,8 +915,6 @@ function renderAlunos(filter = '') {
     );
 
   if (!lista.length) {
-   
-  if (!lista.length) {
 
     body.innerHTML = `
       <tr>
@@ -927,14 +927,17 @@ function renderAlunos(filter = '') {
     return;
   }
 
-
   lista.forEach(a => {
 
     const tr =
       document.createElement('tr');
 
-    const status = getStatusAluno(a);
-    const statusClasse = status;
+    const status =
+      getStatusAluno(a);
+
+    const statusClasse =
+      status;
+
     const statusTexto =
       status === 'ativo'
         ? 'Ativo'
@@ -942,16 +945,23 @@ function renderAlunos(filter = '') {
           ? 'Bloqueado'
           : 'Inativo';
 
-
     tr.innerHTML = `
 
-     <td>${esc((a.nome || '').toUpperCase())}</td>
+      <td>
+        ${esc((a.nome || '').toUpperCase())}
+      </td>
 
-      <td>${esc(a.telefone || '-')}</td>
+      <td>
+        ${esc(a.telefone || '-')}
+      </td>
 
-      <td>${esc(a.plano || '-')}</td>
+      <td>
+        ${esc(a.plano || '-')}
+      </td>
 
-      <td>${money(a.valor_mensal)}</td>
+      <td>
+        ${money(a.valor_mensal)}
+      </td>
 
       <td>
         ${
@@ -963,52 +973,48 @@ function renderAlunos(filter = '') {
 
       <td>
 
-        <span
-          class="status ${statusClasse}">
-
+        <span class="status ${statusClasse}">
           ${statusTexto}
-
         </span>
 
       </td>
 
-<td>
+      <td>
 
-  <button
-    type="button"
-    class="secondary"
-    data-editar="${esc(a.id)}">
+        <button
+          type="button"
+          class="secondary"
+          data-editar="${esc(a.id)}">
 
-    Editar
+          Editar
 
-  </button>
+        </button>
 
-  <button
-    type="button"
-    class="secondary"
-    data-pagar="${esc(a.id)}">
+        <button
+          type="button"
+          class="secondary"
+          data-pagar="${esc(a.id)}">
 
-    Financeiro
+          Financeiro
 
-  </button>
+        </button>
 
-  <button
-    type="button"
-    class="secondary"
-    data-historico="${esc(a.id)}">
+        <button
+          type="button"
+          class="secondary"
+          data-historico="${esc(a.id)}">
 
-    Histórico
+          Histórico
 
-  </button>
+        </button>
 
-</td>
+      </td>
+
     `;
-
 
     body.appendChild(tr);
 
   });
-
 
   body
     .querySelectorAll('[data-pagar]')
@@ -1019,12 +1025,8 @@ function renderAlunos(filter = '') {
         $('pagAluno').value =
           btn.dataset.pagar;
 
-
         const selecionado =
-          aluno(
-            btn.dataset.pagar
-          );
-
+          aluno(btn.dataset.pagar);
 
         if (selecionado) {
 
@@ -1035,54 +1037,58 @@ function renderAlunos(filter = '') {
 
         }
 
-
         abrirAba('pagamentos');
 
       };
 
     });
+
   body
-  .querySelectorAll('[data-editar]')
-  .forEach(btn => {
+    .querySelectorAll('[data-editar]')
+    .forEach(btn => {
 
-    btn.onclick = () => {
+      btn.onclick = () => {
 
-      const selecionado =
-        aluno(btn.dataset.editar);
+        const selecionado =
+          aluno(btn.dataset.editar);
 
-      if (!selecionado) return;
-      alunoEditandoId = selecionado.id;
+        if (!selecionado) return;
 
-      $('nome').value =
-        selecionado.nome || '';
+        alunoEditandoId =
+          selecionado.id;
 
-      $('cpf').value =
-        selecionado.cpf || '';
+        $('nome').value =
+          selecionado.nome || '';
 
-      $('telefone').value =
-        selecionado.telefone || '';
+        $('cpf').value =
+          selecionado.cpf || '';
 
-      $('dataNascimento').value =
-        selecionado.data_nascimento || '';
+        $('telefone').value =
+          selecionado.telefone || '';
 
-      $('dataInicio').value =
-        selecionado.data_inicio || '';
-      $('dataExpiracao').value =
-  selecionado.data_expiracao || '';
+        $('dataNascimento').value =
+          selecionado.data_nascimento || '';
 
-      $('plano').value =
-        selecionado.plano || '';
+        $('dataInicio').value =
+          selecionado.data_inicio || '';
 
-      $('mensalidade').value =
-        selecionado.valor_mensal ?? '';
+        $('dataExpiracao').value =
+          selecionado.data_expiracao || '';
 
+        $('plano').value =
+          selecionado.plano || '';
 
+        $('mensalidade').value =
+          selecionado.valor_mensal ?? '';
 
-      $('modal').classList.remove('hidden');
+        $('modal')
+          .classList
+          .remove('hidden');
 
-    };
+      };
 
-  });
+    });
+
   body
     .querySelectorAll('[data-historico]')
     .forEach(btn => {
@@ -1090,12 +1096,12 @@ function renderAlunos(filter = '') {
       btn.onclick = () => {
 
         const alunoSelecionado =
-          aluno(
-            btn.dataset.historico
-          );
+          aluno(btn.dataset.historico);
 
         if (!alunoSelecionado) {
+
           alert('Aluno não encontrado.');
+
           return;
         }
 
@@ -1146,7 +1152,9 @@ function renderAlunos(filter = '') {
                   <tr>
 
                     <td>
-                      ${formatDate(p.data_pagamento)}
+                      ${formatDate(
+                        p.data_pagamento
+                      )}
                     </td>
 
                     <td>
