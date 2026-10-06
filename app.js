@@ -700,6 +700,7 @@ function renderDashboard() {
 
       cardAtivos.onclick = () => {
         filtroStatusAlunos = 'ativo';
+        filtroAtrasadosMes = false;
         const busca = $('buscaAluno');
         if (busca) busca.value = '';
         abrirAba('alunos');
@@ -729,6 +730,7 @@ function renderDashboard() {
 
       cardBloqueados.onclick = () => {
         filtroStatusAlunos = 'bloqueado';
+        filtroAtrasadosMes = false;
         const busca = $('buscaAluno');
         if (busca) busca.value = '';
         abrirAba('alunos');
@@ -751,6 +753,7 @@ function renderDashboard() {
 
       cardInativos.onclick = () => {
         filtroStatusAlunos = 'inativo';
+        filtroAtrasadosMes = false;
 
         const busca = $('buscaAluno');
         if (busca) {
@@ -926,9 +929,31 @@ function renderDashboard() {
     $('alertas').innerHTML =
       atrasados
 
-        ? `<div class="alert">?? Existem ${atrasados} aluno(s) com mensalidade vencida e sem pagamento registrado para este mês.</div>`
+        ? `<div id="alertaAtrasados" class="alert" style="cursor:pointer;" title="Clique para ver os alunos com mensalidade vencida">?? Existem ${atrasados} aluno(s) com mensalidade vencida e sem pagamento registrado para este mês.</div>`
 
         : `<div class="alert">? Nenhum aluno com mensalidade vencida e em aberto neste mês.</div>`;
+
+    const alertaAtrasados = $('alertaAtrasados');
+
+    if (alertaAtrasados) {
+
+      alertaAtrasados.onclick = () => {
+
+        filtroStatusAlunos = '';
+        filtroAtrasadosMes = true;
+
+        const busca = $('buscaAluno');
+
+        if (busca) {
+          busca.value = '';
+        }
+
+        abrirAba('alunos');
+        renderAlunos('');
+
+      };
+
+    }
 
   }
 
@@ -940,6 +965,35 @@ function renderDashboard() {
 ========================= */
 
 let filtroStatusAlunos = '';
+let filtroAtrasadosMes = false;
+
+function alunoEstaAtrasadoNoMes(a, mesAtual = monthKey()) {
+
+  if (getStatusAluno(a) !== 'ativo') {
+    return false;
+  }
+
+  const hojeData = hoje();
+
+  const vencimento =
+    dueDate(
+      mesAtual,
+      a.vencimento
+    );
+
+  const pagamentosMesAluno =
+    data.pagamentos.some(
+      p =>
+        p.data_vencimento?.slice(0, 7) === mesAtual &&
+        String(p.aluno_id) === String(a.id)
+    );
+
+  return (
+    vencimento < hojeData &&
+    !pagamentosMesAluno
+  );
+}
+
 
 function renderAlunos(filter = '') {
 
@@ -970,9 +1024,14 @@ function renderAlunos(filter = '') {
         !filtroStatusAlunos ||
         getStatusAluno(a) === filtroStatusAlunos;
 
+      const correspondeAtrasado =
+        !filtroAtrasadosMes ||
+        alunoEstaAtrasadoNoMes(a);
+
       return (
         correspondeTexto &&
-        correspondeStatus
+        correspondeStatus &&
+        correspondeAtrasado
       );
 
     })
