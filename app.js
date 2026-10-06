@@ -905,43 +905,14 @@ function renderAlunos(filter = '') {
       );
 
     })
+    .sort((a, b) =>
+      (a.nome || '').localeCompare(
+        b.nome || '',
+        'pt-BR'
+      )
+    );
 
-  const body =
-    $('alunosBody');
-
-  if (!body) return;
-
-  body.innerHTML = '';
-
-
-  const termo =
-    filter.trim().toLowerCase();
-
-
-const lista =
-  data.alunos
-    .filter(a => {
-
-      const texto = [
-
-        a.nome,
-        a.telefone,
-        a.cpf,
-        a.plano
-
-      ]
-        .join(' ')
-        .toLowerCase();
-
-      return texto.includes(termo);
-
-    })
-.sort((a, b) =>
-  (a.nome || '').localeCompare(
-    b.nome || '',
-    'pt-BR'
-  )
-)
+  if (!lista.length) {
    
   if (!lista.length) {
 
