@@ -856,6 +856,32 @@ function renderDashboard() {
       antecipados;
 
 
+  /*
+     CARD DE ANTECIPADOS:
+     ao clicar, abre Pagamentos mostrando somente
+     quem antecipou no mês atual.
+  */
+  const cardAntecipados =
+    $('mAntecipados')?.closest('.card');
+
+  if (cardAntecipados) {
+
+    cardAntecipados.style.cursor = 'pointer';
+    cardAntecipados.title =
+      'Clique para ver quem antecipou o pagamento';
+
+    cardAntecipados.onclick = () => {
+
+      filtroPagamentos = 'antecipado';
+
+      abrirAba('pagamentos');
+      renderPagamentos();
+
+    };
+
+  }
+
+
   if ($('resumo')) {
 
     $('resumo').textContent =
@@ -2158,6 +2184,8 @@ $('pagForm').addEventListener(
    HISTÓRICO DE PAGAMENTOS
 ========================= */
 
+let filtroPagamentos = '';
+
 function renderPagamentos() {
 
   const body =
@@ -2168,12 +2196,27 @@ function renderPagamentos() {
   body.innerHTML = '';
 
 
-  if (!data.pagamentos.length) {
+  const mesAtual = monthKey();
+
+  const pagamentosExibidos =
+    filtroPagamentos === 'antecipado'
+      ? data.pagamentos.filter(p =>
+          p.data_pagamento?.slice(0, 7) === mesAtual &&
+          pagamentoAntecipado(p)
+        )
+      : data.pagamentos;
+
+
+  if (!pagamentosExibidos.length) {
 
     body.innerHTML = `
       <tr>
         <td colspan="6">
-          Nenhum pagamento registrado.
+          ${
+            filtroPagamentos === 'antecipado'
+              ? 'Nenhum pagamento antecipado registrado neste mês.'
+              : 'Nenhum pagamento registrado.'
+          }
         </td>
       </tr>
     `;
@@ -2183,7 +2226,7 @@ function renderPagamentos() {
   }
 
 
-  data.pagamentos.forEach(p => {
+  pagamentosExibidos.forEach(p => {
 
     const a =
       aluno(p.aluno_id);
