@@ -75,6 +75,20 @@ function dueDate(mes, vencimento) {
   return `${ano}-${String(numeroMes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
 }
 
+function adicionarDiasData(dataBase, dias) {
+  if (!dataBase) return '';
+
+  const [ano, mes, dia] =
+    dataBase.slice(0, 10).split('-').map(Number);
+
+  if (!ano || !mes || !dia) return '';
+
+  const data = new Date(ano, mes - 1, dia);
+  data.setDate(data.getDate() + Number(dias || 0));
+
+  return `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, '0')}-${String(data.getDate()).padStart(2, '0')}`;
+}
+
 function pagamentoAntecipado(p) {
   return String(p.observacao || '').includes('[ANTECIPADO]');
 }
@@ -1985,6 +1999,33 @@ $('pagForm').addEventListener(
       );
 
 
+    /*
+       RENOVAÇÃO AUTOMÁTICA:
+       - Se o aluno já possui data de expiração, acrescenta 30 dias
+         a partir dessa data.
+       - Se não possui data de expiração, acrescenta 30 dias
+         a partir da data em que o pagamento foi recebido.
+    */
+    const dataBaseExpiracao =
+      alunoSelecionado.data_expiracao ||
+      dataPagamento;
+
+    const novaDataExpiracao =
+      adicionarDiasData(
+        dataBaseExpiracao,
+        30
+      );
+
+    if (!novaDataExpiracao) {
+
+      alert(
+        'Não foi possível calcular a nova data de expiração do aluno.'
+      );
+
+      return;
+    }
+
+
     const obsFinal = [
 
       antecipado
@@ -2039,6 +2080,36 @@ $('pagForm').addEventListener(
         .insert([
           pagamento
         ]);
+
+
+    if (!error) {
+
+      const { error: erroExpiracao } =
+        await db
+          .from('alunos')
+          .update({
+            data_expiracao: novaDataExpiracao,
+            ativo: true
+          })
+          .eq('id', alunoSelecionado.id);
+
+      if (erroExpiracao) {
+
+        console.error(erroExpiracao);
+
+        botao.disabled = false;
+        botao.textContent =
+          'Registrar pagamento';
+
+        alert(
+          'O pagamento foi registrado, mas não foi possível atualizar a data de expiração do aluno: ' +
+          erroExpiracao.message
+        );
+
+        await carregarDados();
+        return;
+      }
+    }
 
 
     botao.disabled = false;
