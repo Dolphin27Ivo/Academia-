@@ -676,6 +676,23 @@ function renderDashboard() {
   const metrics = document.querySelector('.metrics');
   if (metrics) {
 
+    const cardAtivos =
+      $('mAlunos')?.closest('.card');
+
+    if (cardAtivos) {
+      cardAtivos.style.cursor = 'pointer';
+      cardAtivos.title =
+        'Clique para ver os alunos ativos';
+
+      cardAtivos.onclick = () => {
+        filtroStatusAlunos = 'ativo';
+        const busca = $('buscaAluno');
+        if (busca) busca.value = '';
+        abrirAba('alunos');
+        renderAlunos('');
+      };
+    }
+
     if (!$('mBloqueados')) {
       const card = document.createElement('div');
       card.className = 'card';
