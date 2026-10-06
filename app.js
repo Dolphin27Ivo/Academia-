@@ -742,6 +742,25 @@ function renderDashboard() {
       card.innerHTML = '<span>Alunos inativos</span><strong id="mInativos">0</strong>';
       metrics.insertBefore(card, metrics.children[2] || null);
     }
+
+    const cardInativos = $('mInativos')?.closest('.card');
+
+    if (cardInativos) {
+      cardInativos.style.cursor = 'pointer';
+      cardInativos.title = 'Clique para ver os alunos inativos';
+
+      cardInativos.onclick = () => {
+        filtroStatusAlunos = 'inativo';
+
+        const busca = $('buscaAluno');
+        if (busca) {
+          busca.value = '';
+        }
+
+        abrirAba('alunos');
+        renderAlunos('');
+      };
+    }
   }
 
 
