@@ -342,6 +342,8 @@ $('app').classList.remove('hidden');
 
 await carregarDados();
 
+    aplicarPermissoes();
+
 const ultimaAba =
   localStorage.getItem('ultimaAbaAcademia');
 
