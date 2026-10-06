@@ -957,6 +957,159 @@ function renderDashboard() {
 
   }
 
+
+  /*
+     PAGAMENTOS NO DASHBOARD — SOMENTE ADMINISTRADOR
+     Mostra os pagamentos efetuados no mês atual,
+     com aluno, valor, forma de pagamento e data.
+  */
+  let painelPagamentosAdmin =
+    $('painelPagamentosAdmin');
+
+  if (!ehAdmin()) {
+
+    if (painelPagamentosAdmin) {
+      painelPagamentosAdmin.remove();
+    }
+
+    return;
+
+  }
+
+
+  if (!painelPagamentosAdmin) {
+
+    const dashboard = $('dashboard');
+
+    if (dashboard) {
+
+      painelPagamentosAdmin =
+        document.createElement('div');
+
+      painelPagamentosAdmin.id =
+        'painelPagamentosAdmin';
+
+      painelPagamentosAdmin.className = 'card';
+
+      dashboard.appendChild(
+        painelPagamentosAdmin
+      );
+
+    }
+
+  }
+
+
+  if (painelPagamentosAdmin) {
+
+    const pagamentosDashboard =
+      pagamentosMes
+        .slice()
+        .sort((a, b) =>
+          String(
+            b.data_pagamento || ''
+          ).localeCompare(
+            String(
+              a.data_pagamento || ''
+            )
+          )
+        );
+
+    const totalDashboard =
+      pagamentosDashboard.reduce(
+        (total, p) =>
+          total + Number(p.valor || 0),
+        0
+      );
+
+    const formas = [
+      'Pix',
+      'Dinheiro',
+      'Cartão',
+      'Transferência'
+    ];
+
+    const resumoFormas = formas.map(forma => {
+
+      const listaForma =
+        pagamentosDashboard.filter(
+          p =>
+            String(
+              p.forma_pagamento || ''
+            ).toLowerCase() ===
+            forma.toLowerCase()
+        );
+
+      const totalForma =
+        listaForma.reduce(
+          (total, p) =>
+            total + Number(p.valor || 0),
+          0
+        );
+
+      return `
+        <div style="padding:10px 12px;border:1px solid #ddd;border-radius:8px;">
+          <strong>${esc(forma)}</strong><br>
+          <span>${listaForma.length} pagamento(s) — ${money(totalForma)}</span>
+        </div>
+      `;
+
+    }).join('');
+
+    const linhas =
+      pagamentosDashboard.length
+        ? pagamentosDashboard.map(p => {
+
+            const a = aluno(p.aluno_id);
+
+            return `
+              <tr>
+                <td>${esc(a?.nome || 'Aluno não encontrado')}</td>
+                <td>${money(p.valor)}</td>
+                <td>${esc(p.forma_pagamento || '-')}</td>
+                <td>${formatDate(p.data_pagamento)}</td>
+              </tr>
+            `;
+
+          }).join('')
+        : `
+          <tr>
+            <td colspan="4">
+              Nenhum pagamento registrado neste mês.
+            </td>
+          </tr>
+        `;
+
+    painelPagamentosAdmin.innerHTML = `
+      <h2>Pagamentos efetuados no mês</h2>
+
+      <p>
+        Total recebido: <strong>${money(totalDashboard)}</strong>
+      </p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:15px 0;">
+        ${resumoFormas}
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Aluno</th>
+              <th>Valor</th>
+              <th>Forma</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${linhas}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+  }
+
 }
 
 
